@@ -1,5 +1,10 @@
 <template>
-    <div class="create__window">
+
+ <div class="">
+  <!-- <div class="" v-if="getBlackList"> -->
+  <i class="el-icon-warning"></i>Ви не можете відправляти повідомлення цьому користувачу
+<!-- </div> -->
+  <div class="create__window">
       <textarea
         class="create__text"
         placeholder="Write..."
@@ -11,6 +16,8 @@
         @click="sendMessage"
       ></button>
     </div>
+ </div>
+
 </template>
 
 <script lang="ts">
@@ -18,8 +25,6 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 
 export default Vue.extend({
-  props: {
-  },
   data() {
     return {
       text: "",
@@ -32,6 +37,14 @@ export default Vue.extend({
       if (this.text == "") {
         return;
       }
+      // if (this.getBlackList) {
+      //   this.$notify({
+      //             title: 'Заблоковані',
+      //             text: "Ви не можете писати цьому користувачу",
+      //             type: 'warn'
+      //           });
+      //   return
+      // }
       this.$store.dispatch("createMessage", {
           chatId: this.CHAT_ID,
           text: this.text,
@@ -47,8 +60,12 @@ export default Vue.extend({
   computed: {
   ...mapGetters([
     'WEB_SOCKET',
-    'CHAT_ID'
-  ])
+    'CHAT_ID',
+    'ID_LIST_OF_ON_BLACK_LISTS'
+  ]),
+  // getBlackList(): boolean {
+  //     return this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.userId);
+  //   },
 },
 });
 </script>
@@ -69,6 +86,7 @@ export default Vue.extend({
   height: 100%;
   width: 100%;
   font-size: larger;
+  background: rgba(0, 0, 0, 0);
   margin-left: 16px;
   resize: none;
   outline: none;

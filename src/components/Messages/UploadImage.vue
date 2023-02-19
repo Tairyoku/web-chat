@@ -97,6 +97,7 @@ export default Vue.extend({
     changeUserIcon() {
       this.$store.dispatch("changeIcon", this.formData).then(() => {
         this.formData.delete("image");
+        console.log("change icon")
         this.$store.dispatch("getStarted");
         this.$emit("cancel");
       });

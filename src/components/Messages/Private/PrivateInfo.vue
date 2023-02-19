@@ -8,7 +8,7 @@
         ></el-image>
       </div>
       <div class="info__username">
-        {{ user.username }}
+        {{ data.username }}
       </div>
 
     </div>
@@ -17,12 +17,12 @@
 <script lang="ts">
 import Vue from "vue";
 import { IMAGE } from "@/api/routes";
-import UploadImage from "@/components/Messages/UploadImage.vue";
 import { mapGetters } from "vuex";
 import { IUser } from "@/store/models";
 
 export default Vue.extend({
   props: {
+    data: Object
   },
   data() {
     return {
@@ -30,31 +30,28 @@ export default Vue.extend({
       user: {} as IUser,
     };
   },
-  components: {
- UploadImage 
-
-  },
   computed: {
     ...mapGetters([
       "WEB_SOCKET",
-      'USER_ID',
       "CHAT_ID"
     ]),
     imgUrl(): string {
-      return IMAGE(this.user.icon)
+      return IMAGE(this.data.icon)
     },
   },
   methods: {
-},
-watch: {
-  CHAT_ID() {
+    getUserByChatId() {
     this.$store.dispatch("getById", this.CHAT_ID)
     .then((res) => this.user = res.user)
   }
 },
+watch: {
+  CHAT_ID() {
+    this.getUserByChatId()
+  }
+},
 mounted() {
-  this.$store.dispatch("getById", this.CHAT_ID)
-    .then((res) => this.user = res.user)
+this.getUserByChatId()
 }
 });
 </script>

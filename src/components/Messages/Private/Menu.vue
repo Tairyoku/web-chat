@@ -1,10 +1,4 @@
 <template>
-  <!-- інформація -->
-  <!-- Додати до чату -->
-  <!-- Заблокувати -->
-  <!-- Видалити з друзів (якщо друг) -->
-  <!-- видалити чат -->
-
   <div id="public-menu">
     <!-- інформація -->
     <div class="" @click="moreInfoVisible = true">
@@ -49,7 +43,7 @@
 
     <!-- Заблокувати -->
     <div v-if="notBlocked" class="" @click="blockedVisible = true">
-      <el-col :span="8" @click="">
+      <el-col :span="8">
         <el-card shadow="hover">
           Заблокувати
           <i class="el-icon-warning"></i>
@@ -59,7 +53,7 @@
     <el-dialog
       title="Ви дійсно бажаєте заблокувати користувача?"
       :visible.sync="blockedVisible"
-      width="40%"
+      width="400px"
     >
       <span>Він не зможе надсилати вам повідомлення</span>
       <span
@@ -84,7 +78,7 @@
     <el-dialog
       title="Ви дійсно бажаєте покинути чат?"
       :visible.sync="deleteFriendVisible"
-      width="40%"
+      width="400px"
     >
       <span
         slot="footer"
@@ -108,7 +102,7 @@
     <el-dialog
       title="Ви дійсно бажаєте видалити чат?"
       :visible.sync="deleteChatVisible"
-      width="40%"
+      width="400px"
     >
       <span
         slot="footer"
@@ -127,11 +121,9 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 import ChatContainer from "@/components/Chats/ChatContainer.vue";
 import PrivateInfo from "@/components/Messages/Private/PrivateInfo.vue";
-import Notifications from "vue-notification";
 import { IUser } from "@/store/models";
 
 export default Vue.extend({
-  props: {},
   data() {
     return {
       user: {} as IUser,
@@ -144,7 +136,7 @@ export default Vue.extend({
   },
   components: {
     PrivateInfo,
-    ChatContainer
+    ChatContainer,
   },
   computed: {
     ...mapGetters([
@@ -153,7 +145,7 @@ export default Vue.extend({
       "ID_LIST_OF_FRIEND_LIST",
       "ID_LIST_OF_BLACK_LIST",
       "PUBLIC_CHAT_LIST",
-      'WEB_SOCKET'
+      "WEB_SOCKET",
     ]),
     isFriend(): boolean {
       return this.ID_LIST_OF_FRIEND_LIST.includes(this.user.id);
@@ -178,11 +170,11 @@ export default Vue.extend({
           text: "Користувач заблокован",
           type: "success",
         });
-    this.WEB_SOCKET.send("block")
+        this.WEB_SOCKET.send("block");
         this.blockedVisible = false;
       });
     },
-    addUserToChat(id:number) {
+    addUserToChat(id: number) {
       this.$store
         .dispatch("addUserToChat", {
           userId: this.user.id,
@@ -194,7 +186,7 @@ export default Vue.extend({
             text: "Користувач додан до чату",
             type: "success",
           });
-    this.WEB_SOCKET.send("add to chat")
+          this.WEB_SOCKET.send("add to chat");
           this.addToChatVisible = false;
         });
     },
@@ -206,8 +198,8 @@ export default Vue.extend({
           type: "success",
         });
         this.$router.push("/chat/");
-        this.WEB_SOCKET.send("delete chat")
- this.deleteChatVisible = false;
+        this.WEB_SOCKET.send("delete chat");
+        this.deleteChatVisible = false;
       });
     },
     deleteFriend() {
@@ -218,13 +210,14 @@ export default Vue.extend({
           text: "Користувач вам більше не друг",
           type: "success",
         });
-        this.WEB_SOCKET.send("delete friend")
- this.deleteFriendVisible = false;
+        this.WEB_SOCKET.send("delete friend");
+        this.deleteFriendVisible = false;
       });
     },
   },
   mounted() {
-    this.$store.dispatch("getById", this.CHAT_ID).then((res) => {
+    this.$store.dispatch("getById", this.CHAT_ID)
+    .then((res) => {
       this.user = res.user;
     });
   },
@@ -255,22 +248,22 @@ ul {
 }
 
 .chatlist {
-overflow-x: hidden; 
+  overflow-x: hidden;
   overflow-y: auto;
   height: 75vh;
 }
 
 .chatlist::-webkit-scrollbar {
-      width: 1em;
-      } 
-      .chatlist::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-      }
-      .chatlist::-webkit-scrollbar-thumb {
-      background-color: #666;
-      outline: 1px solid #eee;
-      border-radius: 4px;
-      }
+  width: 1em;
+}
+.chatlist::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+.chatlist::-webkit-scrollbar-thumb {
+  background-color: #666;
+  outline: 1px solid #eee;
+  border-radius: 4px;
+}
 #public-menu {
   position: absolute;
   right: 0;

@@ -120,7 +120,7 @@ export default Vue.extend({
 .personal__data {
   padding: 8px 16px;
   border-radius: 8px;
-  background-color: rgb(66, 168, 241);
+  background-color: #aeeb4d7a;;
 }
 .personal__text,
 .got__text {
@@ -159,11 +159,10 @@ export default Vue.extend({
 }
 .got__data {
   display: flex;
+  background-color: #d5d54070;
+    box-shadow: 0px 0px 10px rgb(173 255 0 / 51%);
   padding: 8px 16px;
   border-radius: 8px;
-  background-color: white;
-  border: 1px solid rgb(66, 168, 241);
-  box-shadow: 0px 0px 10px rgb(66, 168, 241, 0.3);
 }
 .got__tail {
   width: 100%;

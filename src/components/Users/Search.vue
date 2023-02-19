@@ -1,11 +1,13 @@
 <template>
   <div class="search">
-    <div class="search__search-line" >
+    <div class="search__search-line"
+    v-on:input="searchHandler"
+    @focusout="setSearch(false)"
+     >
       <el-input
         class="search__input"
-        v-on:input="searchHandler"
         v-model="searchName"
-        placeholder="search..."
+        placeholder="Знайти..."
         @focus="setSearch(true)"
       >
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -16,13 +18,19 @@
         ></i>
       </el-input>
     </div>
-    <div v-if="search" @mouseleave="setSearch(false)" class="search__found">
+    <div 
+    v-if="search" 
+    class="search__found"
+    >
       <div v-if="searchName?.length == 0"></div>
-      <div v-else-if="USERS_SEARCH_RESULT?.length == 0">not found</div>
+      <div 
+      v-else-if="USERS_SEARCH_RESULT?.length == 0"
+      class="search__not-found"
+      >Нікого не знайдено</div>
       <div v-else>
-        <ul class="" style="margin-left: 0; padding-left: 0">
+        <ul class="" style="margin-left: 0; padding-left: 0; ">
           <li
-            style="list-style-type: none"
+            style="list-style-type: none; margin-bottom: 16px;"
             :key="item.id"
             v-for="item in USERS_SEARCH_RESULT"
           >
@@ -81,10 +89,10 @@ export default Vue.extend({
       this.$store.dispatch("createPrivateChat", id).
       then((res) => {
           this.$router.push(`/chat/${res}`);
-        if (this.WEB_SOCKET.readyState != undefined) {
-          this.$store.commit("closeSocket");
-        }
-        this.$store.dispatch("openWebsocket", res);
+        // if (this.WEB_SOCKET.readyState != undefined) {
+        //   this.$store.commit("closeSocket");
+        // }
+        // this.$store.dispatch("openWebsocket", res);
         this.$store.dispatch("getUserPrivateChats", this.USER_ID);
 
       });
@@ -95,7 +103,7 @@ export default Vue.extend({
 
 <style scoped>
 .search__found {
-  background-color: aqua;
+  background: linear-gradient(#fffbef, rgb(213 213 64));
   position: absolute;
   z-index: 3;
   width: inherit;
@@ -103,9 +111,25 @@ export default Vue.extend({
 }
 .search__search-line {
   display: flex;
-  background-color: white;
+  color: black;
+  background-color: #fff0;
 }
 .search {
   width: inherit;
 }
+:deep(.el-input__inner) {
+    background-color: #fff0;
+    border: 2px solid #245f1aab;
+    color: #245f1a;
+}
+.search__not-found {
+  font-size: 24px;
+  color: #245f1a;
+  margin: 20px;
+}
+:deep(.el-input__prefix),
+:deep(.el-input__suffix),
+:deep(.el-input__inner::placeholder) {
+    color: #245f1aab;
+} 
 </style>

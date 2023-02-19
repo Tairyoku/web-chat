@@ -1,15 +1,11 @@
 <template>
   <div id="container-block">
-    <div class="container__icon" @click="click">
+    <div class="container__icon">
       <div class="" v-if="item.icon == ``">
         {{ getChatIcon(item.username) }}
       </div>
       <div class="" v-else>
-        <el-image
-         class="container__image" 
-         :src="imgUrl" 
-         :fit="fit"
-         ></el-image>
+        <el-image class="container__image" :src="imgUrl" :fit="fit"></el-image>
       </div>
     </div>
     <div class="container__info">
@@ -33,15 +29,9 @@ export default Vue.extend({
   },
   methods: {
     getChatIcon(name: string): string {
-      return name.length < 4 ? name : name.split("").slice(0, 3).join("");
-    },
-    click() {
-      console.log(this.item.id);
-      console.log(this.item.username);
-      console.log(this.item.icon);
+      return name?.length < 4 ? name : name?.split("").slice(0, 3).join("");
     },
   },
-  components: {},
   computed: {
     imgUrl() {
       return IMAGE_SMALL(this.item.icon);
@@ -51,6 +41,12 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+#container-block {
+  color: black;
+  height: 52px;
+  padding: 4px;
+  display: flex;
+}
 .container__icon {
   display: flex;
   justify-content: center;
@@ -62,12 +58,6 @@ export default Vue.extend({
   border-radius: 26px;
   color: white;
   background-color: rgb(207, 49, 186);
-}
-#container-block {
-  color: black;
-  height: 52px;
-  padding: 4px;
-  display: flex;
 }
 .container__image {
   width: 52px;
@@ -87,11 +77,5 @@ export default Vue.extend({
   overflow: hidden;
   flex-direction: column;
   align-items: flex-start;
-}
-
-.container__name {
-  margin-left: 8px;
-  width: 100%;
-  text-align: center;
 }
 </style>

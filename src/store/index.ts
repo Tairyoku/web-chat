@@ -613,9 +613,10 @@ export default new Vuex.Store({
      */
     openWebsocket({ }, chatId: number) {
       this.commit("openWebsocket", chatId);
+      console.log("socket action")
       this.state.socket.onmessage = (msg: any) => {
         this.dispatch("getNewMessage", chatId);
-        this.dispatch('getStarted')
+        // this.dispatch('getStarted')
       };
     },
     /**

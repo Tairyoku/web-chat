@@ -1,13 +1,13 @@
 <template>
   <div class="search">
     <div class="search__search-line" 
-    @focusout="setSearch(false)"
+    @focusout="isSearchWindowVisible(false)"
+    v-on:input="searchHandler"
     >
-    <!-- v-on:input="searchHandler" -->
       <el-input
         v-model="searchName"
-        placeholder="search..."
-        @focus="setSearch(true)"
+        placeholder="Знайти..."
+        @focus="isSearchWindowVisible(true)"
       >
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
         <i
@@ -19,7 +19,10 @@
     </div>
     <div v-if="search" class="search__found">
       <div v-if="searchName?.length == 0"></div>
-      <div v-else-if="CHATS_SEARCH_RESULT?.length == 0">not found</div>
+      <div 
+      v-else-if="CHATS_SEARCH_RESULT?.length == 0"
+    class="search__not-found"
+      >Чатів не знайдено</div>
       <div v-else>
         <ul class="" style="margin-left: 0; padding-left: 0">
           <li
@@ -27,7 +30,7 @@
             :key="item.id"
             v-for="item in CHATS_SEARCH_RESULT"
           >
-            <div class="" @click="click(item.id)">
+            <div class="" @click="getUserChat(item.id)">
   <ChatContainer :chat="item" />
 </div>
           </li>
@@ -59,15 +62,10 @@ export default Vue.extend({
     ]),
   },
   methods: {
-    click(chatId: number) {
+    getUserChat(chatId: number) {
       this.$router.push(`/chat/${chatId}`);
-      this.$store.commit('setChatId', chatId) 
-      if (this.WEB_SOCKET.readyState != undefined) {
-          this.$store.commit("closeSocket");
-        }
-        this.$store.dispatch("openWebsocket", chatId);
     },
-    setSearch(res: boolean) {
+    isSearchWindowVisible(res: boolean) {
       this.search = res;
     },
     clearSearch() {
@@ -89,12 +87,11 @@ export default Vue.extend({
 
 <style scoped>
 .search {
-  /* display: flex; */
   width: inherit;
 }
 
 .search__found {
-  background-color: aqua;
+  background: linear-gradient(#beef71, rgb(229 255 173));
   position: absolute;
   z-index: 3;
   width: inherit;
@@ -102,6 +99,22 @@ export default Vue.extend({
 }
 .search__search-line {
   display: flex;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
+}
+:deep(.el-input__inner) {
+    background-color: #fff0;
+    border: 2px solid #929224ab;
+    color: #929224;
+}
+
+:deep(.el-input__prefix),
+:deep(.el-input__suffix),
+:deep(.el-input__inner::placeholder) {
+    color: #929224ab;
+}
+.search__not-found {
+  font-size: 24px;
+  color: #929224;
+  margin: 20px;
 }
 </style>

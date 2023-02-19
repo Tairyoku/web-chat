@@ -107,7 +107,6 @@ width="300px"
       import UploadImage from '@/components/Messages/UploadImage.vue'
 import { mapGetters } from 'vuex';
 import PublicInfo from '@/components/Messages/Public/PublicInfo.vue'
-import Notifications from 'vue-notification'
        
     export default Vue.extend({
           props: {

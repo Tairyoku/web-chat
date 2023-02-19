@@ -6,12 +6,12 @@
         <el-input
           class="input"
           style="margin-top: 48px"
-          placeholder="Please input"
+          placeholder="Як тебе звати?"
           v-model="form.username"
         ></el-input>
         <el-input
           class="input"
-          placeholder="Please input password"
+          placeholder="Згадай свій пароль"
           v-model="form.password"
           show-password
         ></el-input>

@@ -12,23 +12,23 @@
           >
             <span slot="label">
               <i class="el-icon-circle-plus-outline"></i>
-              Create new Chat
+              Новий чат
             </span>
           </div>
           <div v-else>
             <el-input
+            class="chat__create-form"
               v-model="chatName"
               style="margin-bottom: 4px"
               placeholder="Введіть назву"
             />
             <div style="display: flex; justify-content: space-between">
-              <el-button v-on:click="createChat"> Створити </el-button>
-              <el-button v-on:click="cancelCreate"> Назад </el-button>
+              <el-button class="chat__create-form" v-on:click="createChat"> Створити </el-button>
+              <el-button class="chat__create-form" v-on:click="cancelCreate"> Назад </el-button>
             </div>
           </div>
         </li>
         <li
-          style="list-style-type: none"
           v-for="item in PUBLIC_CHAT_LIST"
           :key="item.id"
         >
@@ -64,11 +64,9 @@ export default Vue.extend({
   methods: {
     createNewChat(chatId: number) {
       this.$store.commit("setChatId", chatId);
-      if (this.WEB_SOCKET.readyState != undefined) {
-        this.$store.commit("closeSocket");
-      }
+      if (this.CHAT_ID != chatId) {
       this.$router.push(`/chat/${chatId}`);
-      this.$store.dispatch("openWebsocket", chatId);
+      }
     },
     setInputChatVisible() {
       this.inputChatVisible = !this.inputChatVisible;
@@ -90,7 +88,8 @@ export default Vue.extend({
     ...mapGetters([
       "PUBLIC_CHAT_LIST", 
       "WEB_SOCKET", 
-      "USER_ID"
+      "USER_ID",
+      'CHAT_ID'
     ]),
   },
 });
@@ -99,6 +98,7 @@ export default Vue.extend({
 <style scoped>
 li {
   list-style-type: none;
+  margin-bottom: 16px;
 }
 ul {
   padding-inline-start: 0px;
@@ -115,16 +115,30 @@ ul {
   height: -webkit-fill-available;
 }
 .chat__create {
-  height: 60px;
-  padding: 8px 16px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #6e6e6e;
+  border-radius: 12px;
+    padding: 12px;
+    background-color: rgba(207, 49, 186, 0);
+    /* justify-content: space-evenly; */
+    /* display: flex; */
+    border: 2px solid #c1ab18;
+    box-shadow: 2px -2px 4px 4px #c1ab1882;
+    margin: 8px;
+    color: #245f1a;
+    margin-bottom: 16px;
 }
 .chat__create-button {
-  height: 40px;
-  display: contents;
+  height: 48px;
+  font-size: 24px;
+    display: contents;
+}
+.chat__create-form {
+  box-shadow: 0px 0px 2px 2px #c1ab1882;
+  border-radius: 8px;
+
 }
 .chat-view__list::-webkit-scrollbar {
   width: 1em;

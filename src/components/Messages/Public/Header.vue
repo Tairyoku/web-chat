@@ -83,7 +83,7 @@ export default Vue.extend({
   display: flex;
   height: 80px;    
   justify-content: space-between;
- background-color: rgb(66, 168, 241, 0.5);
+  background: linear-gradient(217deg, #aeeb4dcc, rgb(213 213 64));
  border-bottom-left-radius: 12px;
  border-bottom-right-radius: 12px;
 }

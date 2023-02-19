@@ -33,23 +33,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapGetters } from "vuex";
-import { IUser } from "@/store/models";
 
 export default Vue.extend({
-  name: "messages-header",
   props: {
     userId: Number,
-  },
-  data() {
-    return {
-      isMenu: false,
-    };
   },
   computed: {
     ...mapGetters([
       "ID_LIST_OF_FRIEND_LIST",
       "ID_LIST_OF_BLACK_LIST",
-      "ID_LIST_OF_ON_BLACK_LISTS",
       "ID_LIST_OF_SENT_INVITES_TO_FRIENDS",
       "ID_LIST_OF_FRIENDSHIP_REQUIRE",
       'USER_ID',
@@ -106,7 +98,6 @@ export default Vue.extend({
 
 <style scoped>
 .status-btn {
- /* background-color: rgb(66, 168, 241, 0.5); */
  margin: auto 20px;
  display: flex;
     height: 100%;
@@ -117,7 +108,6 @@ export default Vue.extend({
     font-size: 14px;
     border-radius: 8px;
     padding: 8px;
-    /* background-color: rgba(66, 168, 241, 0.086); */
 }
 :deep(.el-button.is-round) {
 padding: 8px;

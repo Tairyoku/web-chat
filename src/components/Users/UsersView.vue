@@ -43,10 +43,10 @@ export default Vue.extend({
       this.$store.dispatch("createPrivateChat", id).
       then((res) => {
         this.$router.push(`/chat/${res}`);
-        if (this.WEB_SOCKET.readyState != undefined) {
-          this.$store.commit("closeSocket");
-        }
-        this.$store.dispatch("openWebsocket", res);
+        // if (this.WEB_SOCKET.readyState != undefined) {
+        //   this.$store.commit("closeSocket");
+        // }
+        // this.$store.dispatch("openWebsocket", res);
         this.$store.dispatch("getUserPrivateChats", this.USER_ID);
 
       });

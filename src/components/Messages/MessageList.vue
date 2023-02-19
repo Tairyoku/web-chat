@@ -60,6 +60,9 @@ this.scrollTrigger()
       return true
     },
 scrollTrigger() {
+  if (this.MESSAGE_LIST?.length == 0) {
+    return
+  }
             const observer = new IntersectionObserver((entries) => {
               entries.forEach(entry => {
                 if (entry.intersectionRatio > 0) {

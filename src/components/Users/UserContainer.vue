@@ -91,11 +91,15 @@ export default Vue.extend({
 }
 #container-block {
   color: black;
-  height: 52px;
-  padding: 12px;
-  justify-content: space-evenly;
-  display: flex;
-  border-bottom: 1px solid #6e6e6e;
+    height: 52px;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 8px;
+  background-color: rgba(207, 49, 186, 0);
+    justify-content: space-evenly;
+    display: flex;
+    border: 2px solid #c1ab18;
+    box-shadow: 2px -2px 4px 4px #c1ab1882;
 }
 .container__image {
   width: 52px;

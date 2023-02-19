@@ -27,9 +27,9 @@ export default Vue.extend({
 Users,
 Chats,
   },
-  updated() {
-  this.$store.dispatch('getStarted')
-},
+//   updated() {
+//   this.$store.dispatch('getStarted')
+// },
 });
 </script>
 <style scoped>
@@ -38,7 +38,7 @@ display: flex;
 width: 100%;
 }
 .main__users {
-  background: rgb(247, 234, 234);
+  background: linear-gradient(#aeeb4dcc, rgb(229 255 173));
   width: 25vw;
   height: 100%;
   border: 1px solid gray;
@@ -48,11 +48,11 @@ width: 100%;
   width: 25vw;
   border: 1px solid gray;
   border-left: none;
-  background: rgba(130, 249, 229, 0.345);
+  background: linear-gradient(#fffbef, rgb(213 213 64));
 }
 .main__messages {
   height: 100%;
-  background: rgba(0, 255, 8, 0.127);
+  background: linear-gradient(130deg, #ddff8f, #ffc0cb82);
   width: -webkit-fill-available;
 }
 :deep(.el-input__inner) {

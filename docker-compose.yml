@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  nginx:
+#    image: 283158/vue-app-nginx
+    build: .
+    stdin_open: true
+    tty: true
+    ports:
+      - '90:80'
+    environment:
+      - VUE_APP_BASE_URL=localhost:8000
+    restart: always

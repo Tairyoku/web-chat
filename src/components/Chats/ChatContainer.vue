@@ -2,10 +2,10 @@
   <div id="chat-container">
     <div class="container__icon">
       <div v-if="chat.icon == ''">
-        {{ getChatIcon(chat?.name) }}
+        {{ getNameForIcon(chat?.name) }}
       </div>
       <div v-else>
-        <el-image class="container__image" :src="imgUrl" :fit="fit" />
+        <el-image class="container__image" :src="getImageUrl" :fit="fit" />
       </div>
     </div>
 
@@ -13,7 +13,9 @@
       <div style="margin-left: 8px">
         {{ chat.name }}
       </div>
-      <div v-if="chat.types != 'private'">{{ numberOfUsers }} {{ users }}</div>
+      <div v-if="chat.types != 'private'">
+        {{ numberOfUsersOnChat }} {{ getTypeByNumOfUsersInChat }}
+      </div>
     </div>
   </div>
 </template>
@@ -22,13 +24,11 @@
 import Vue from "vue";
 import { mapGetters } from "vuex";
 import { IMAGE_SMALL } from "@/api/routes";
+
 export default Vue.extend({
-  name: "user-container",
   data() {
     return {
-      chatId: 0,
-      numberOfUsers: 0,
-      img: "",
+      numberOfUsersOnChat: 0,
       fit: "cover",
     };
   },
@@ -36,34 +36,23 @@ export default Vue.extend({
     chat: Object,
   },
   methods: {
-    getChatIcon(name: string): string {
+    getNameForIcon(name: string): string {
       return name.length < 4 ? name : name.split("").slice(0, 3).join("");
     },
-    click() {
-      this.$router.push(`/chat/${this.chat.id}`);
-      this.$store.commit("setChatId", this.chat.id);
-      if (this.WEB_SOCKET.readyState != undefined) {
-        this.$store.commit("closeSocket");
-      }
-      this.$store.dispatch("openWebsocket", this.chat.id);
-    },
   },
-  components: {},
   computed: {
-    ...mapGetters(["WEB_SOCKET", "USER_ID"]),
-    imgUrl(): string {
+    ...mapGetters(["USER_ID"]),
+    getImageUrl(): string {
       return IMAGE_SMALL(this.chat.icon);
     },
-    users() {
-      switch (this.numberOfUsers) {
+    getTypeByNumOfUsersInChat() {
+      switch (this.numberOfUsersOnChat) {
         case 1:
           return "користувач";
-
         case 2:
         case 3:
         case 4:
           return "користувачі";
-
         default:
           return "користувачів";
       }
@@ -71,7 +60,7 @@ export default Vue.extend({
   },
   mounted() {
     this.$store.dispatch("getChatUsers", this.chat.id).then((res) => {
-      this.numberOfUsers = res.size;
+      this.numberOfUsersOnChat = res.size;
     });
   },
 });
@@ -80,11 +69,15 @@ export default Vue.extend({
 <style scoped>
 #chat-container {
   color: black;
-  height: 52px;
-  padding: 12px;
-  justify-content: space-evenly;
-  display: flex;
-  border-bottom: 1px solid #6e6e6e;
+    height: 52px;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 8px;
+  background-color: rgba(207, 49, 186, 0);
+    justify-content: space-evenly;
+    display: flex;
+    border: 2px solid #c1ab18;
+    box-shadow: 2px -2px 4px 4px #c1ab1882;
 }
 .container__icon {
   display: flex;
