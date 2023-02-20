@@ -1,7 +1,6 @@
 <template>
   <div class="search">
     <div class="search__search-line" 
-    @focusout="isSearchWindowVisible(false)"
     v-on:input="searchHandler"
     >
       <el-input
@@ -17,7 +16,10 @@
         ></i>
       </el-input>
     </div>
-    <div v-if="search" class="search__found">
+    <div 
+    v-if="search" 
+    @mouseleave="isSearchWindowVisible(false)"
+    class="search__found">
       <div v-if="searchName?.length == 0"></div>
       <div 
       v-else-if="CHATS_SEARCH_RESULT?.length == 0"

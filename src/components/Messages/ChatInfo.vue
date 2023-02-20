@@ -8,85 +8,8 @@
         ></el-image>
       </div>
       <div class="info__username">
-        {{ data.username }}
+        {{ data.name }}
       </div>
-      <div class="info__setting">
-        Налаштування
-        <div class=" change change__username"  >
-       <div style="display: flex;"  @click="changeSetting('username')">
-        <el-col :span="8">
-    <el-card shadow="hover">
-      Змінити ім'я
-      <i class="el-icon-info"></i>
-    </el-card>
-  </el-col>
-       </div>
-  <el-form v-if="changeUsernameVisible" :model="newUsername" status-icon :rules="rules" class="demo-ruleForm">
-  <span>Нове ім'я</span>
-    <el-form-item>
-    <el-input type="text" size="small" v-model="newUsername" autocomplete="off"></el-input>
-  </el-form-item>
-  <el-form-item>
-    <el-button type="primary" show-password @click="">Змінити</el-button>
-    <el-button @click="">Назад</el-button>
-  </el-form-item>
-</el-form>
-       </div> 
-       <div class=" change change__password"  >
-       <div style="display: flex;"  @click="changeSetting('password')">
-        <el-col :span="8">
-    <el-card shadow="hover" >
-      Змінити пароль
-      <i class="el-icon-info"></i>
-    </el-card>
-  </el-col>
-  </div>
-  <el-form v-if="changePasswordVisible" :model="passwordForm" status-icon :rules="rules" class="demo-ruleForm">
-  <span>Старий пароль</span>
-    <el-form-item>
-    <el-input type="password" show-password v-model="passwordForm.oldPass" autocomplete="off"></el-input>
-  </el-form-item>
-  <span>Новий пароль</span>
-  <el-form-item>
-    <el-input type="password" show-password size="small" v-model="passwordForm.newPass" autocomplete="off"></el-input>
-  </el-form-item>
-  <el-form-item>
-    <el-button type="primary" show-password @click="">Змінити</el-button>
-    <el-button @click="">Назад</el-button>
-  </el-form-item>
-</el-form>
-</div>
-<div class="change ">
-  <div style="display: flex;"  @click="changeSetting('icon')">
-        <el-col :span="8">
-    <el-card shadow="hover" >
-      Змінити зображення
-      <i class="el-icon-info"></i>
-    </el-card>
-  </el-col>
-  </div>
-<div class="change__icon" v-if="changeIconVisible">
-  <UploadImage />
-</div>
-</div>
-              <!-- <el-dialog
-  title="Ви дійсно бажаєте видалити чат?"
-  :visible.sync="changePasswordVisible"
-  width="40%"
-  >
-  <el-input
-    size="small"
-    placeholder="Please Input"
-    v-model="input3">
-  </el-input>
-  <span slot="footer" class="dialog-footer" style="justify-content: space-around; display: flex;">
-    <el-button @click="deleteChatVisible = false">Відмінити</el-button>
-    <el-button type="primary" @click="deleteChat">Видалити</el-button>
-  </span>
-</el-dialog> -->
-      </div>
- 
-
     </div>
 </template>
 
@@ -103,23 +26,6 @@ export default Vue.extend({
   data() {
     return {
       fit: 'cover',
-      changePasswordVisible: false,
-      changeUsernameVisible: false,
-      changeIconVisible: false,
-      passwordForm: {
-          oldPass: '',
-          newPass: "",
-        },
-        newUsername: "",
-        rules: {
-          oldPass: [
-          { required: true, message: 'Введіть поточний пароль', trigger: 'blur' },
-          ],
-          newPass: [
-          { required: true, message: 'Введіть новий пароль', trigger: 'blur' },
-            { min: 6, message: 'Пароль не має бути коротший за 6 символів', trigger: 'blur' }
-          ]
-        }
     };
   },
   components: {
@@ -132,28 +38,6 @@ export default Vue.extend({
     },
   },
   methods: {
-    changeSetting(type:string) {
-      switch (type) {
-        case "username": {
-          this.changeIconVisible = false
-      this.changePasswordVisible = false
-      this.changeUsernameVisible = !this.changeUsernameVisible
-      break
-        }
-        case "password": {
-          this.changeIconVisible = false
-      this.changePasswordVisible = !this.changePasswordVisible
-      this.changeUsernameVisible = false
-      break
-        }
-        case "icon": {
-          this.changeIconVisible = !this.changeIconVisible
-      this.changePasswordVisible = false
-      this.changeUsernameVisible = false
-      break
-        }
-    }
-  },
 }
 });
 </script>

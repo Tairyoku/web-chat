@@ -6,8 +6,8 @@
     <div class="" v-else-if="typeOfChat == `public`">
       <PublicHeader />
     </div>
-    <!-- <MessageList :chat="chat" /> -->
-    <!-- <MessageCreate /> -->
+    <MessageList :chat="chat" />
+    <MessageCreate />
   </div>
 </template>
 

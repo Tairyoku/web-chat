@@ -2,7 +2,6 @@
   <div class="search">
     <div class="search__search-line"
     v-on:input="searchHandler"
-    @focusout="setSearch(false)"
      >
       <el-input
         class="search__input"
@@ -21,6 +20,7 @@
     <div 
     v-if="search" 
     class="search__found"
+    @mouseleave="setSearch(false)"
     >
       <div v-if="searchName?.length == 0"></div>
       <div 

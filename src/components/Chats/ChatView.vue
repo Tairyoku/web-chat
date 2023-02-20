@@ -32,7 +32,7 @@
           v-for="item in PUBLIC_CHAT_LIST"
           :key="item.id"
         >
-          <div @click="createNewChat(item.id)">
+          <div @click="openChat(item.id)">
             <ChatContainer :chat="item" />
           </div>
         </li>
@@ -62,7 +62,7 @@ export default Vue.extend({
     Search,
   },
   methods: {
-    createNewChat(chatId: number) {
+    openChat(chatId: number) {
       this.$store.commit("setChatId", chatId);
       if (this.CHAT_ID != chatId) {
       this.$router.push(`/chat/${chatId}`);

@@ -1,8 +1,8 @@
 <template>
 
  <div class="">
-  <!-- <div class="" v-if="getBlackList"> -->
-  <i class="el-icon-warning"></i>Ви не можете відправляти повідомлення цьому користувачу
+  <!-- <div class="" v-if="getIsOnBlackList"> -->
+  <!-- <i class="el-icon-warning"></i>Ви не можете відправляти повідомлення цьому користувачу -->
 <!-- </div> -->
   <div class="create__window">
       <textarea
@@ -37,7 +37,7 @@ export default Vue.extend({
       if (this.text == "") {
         return;
       }
-      // if (this.getBlackList) {
+      // if (this.getIsOnBlackList) {
       //   this.$notify({
       //             title: 'Заблоковані',
       //             text: "Ви не можете писати цьому користувачу",
@@ -63,7 +63,7 @@ export default Vue.extend({
     'CHAT_ID',
     'ID_LIST_OF_ON_BLACK_LISTS'
   ]),
-  // getBlackList(): boolean {
+  // getIsOnBlackList(): boolean {
   //     return this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.userId);
   //   },
 },

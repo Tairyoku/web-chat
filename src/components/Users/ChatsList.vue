@@ -31,6 +31,7 @@ export default Vue.extend({
   },
   methods: {
     click(chatId: number) {
+      this.$store.commit("setChatId", chatId);
       this.$router.push(`/chat/${chatId}`);
     },
   },
