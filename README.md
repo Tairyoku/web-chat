@@ -1,5 +1,11 @@
 # chat
 
+
+## For running in Docker
+```
+docker-compose up -d --build
+```
+
 ## Project setup
 ```
 npm install
