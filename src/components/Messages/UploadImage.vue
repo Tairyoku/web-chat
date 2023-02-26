@@ -100,7 +100,6 @@ computed: {
       .dispatch("changeIcon", this.formData)
       .then(() => {
         this.formData.delete("image");
-        console.log("change icon");
         this.$store.dispatch("getStarted");
         this.$notify({
           title: "Зображення успішно змінено",

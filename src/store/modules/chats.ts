@@ -230,7 +230,6 @@ const ChatModule: Module<ChatState, RootState> = ({
      * @param {number} chatId - ID чату 
      */
     async addUserToChat({ }, { userId, chatId }) {
-      console.log(userId, chatId)
       await axiosInstanse
         .post(ADD_TO_CHAT(chatId), {
           "user_id": userId,

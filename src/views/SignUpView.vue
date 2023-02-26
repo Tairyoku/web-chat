@@ -71,7 +71,6 @@ export default Vue.extend({
         .then(()=> {
           this.$store.dispatch("getUser", this.USER_ID)
           .then((res) => {
-            console.log("getUser",res)
           this.$store.commit("setUser", res);
           this.$router.push('/')
           });

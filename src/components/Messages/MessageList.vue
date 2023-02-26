@@ -66,7 +66,6 @@ export default Vue.extend({
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0) {
-            console.log("first");
             this.loaderVisible = true;
             this.msgLength = this.MESSAGE_LIST?.length;
             this.$store
@@ -79,7 +78,6 @@ export default Vue.extend({
               this.loaderVisible = false;
               if (!this.MESSAGE_LIST?.length) return
               if (this.msgLength == this.MESSAGE_LIST?.length && this.MESSAGE_LIST?.length) {
-                console.log("disconnect");
                 observer.disconnect();
               }
               this.limit += 6;

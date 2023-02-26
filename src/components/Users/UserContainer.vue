@@ -1,5 +1,5 @@
 <template>
-  <div class="container-block">
+  <div class="container-block" @click="getChat()">
     <div class="container__icon">
       <div style="width: 60px;" v-if="user.icon == ''">
         {{ getNameForIcon }}

@@ -43,7 +43,6 @@ export default Vue.extend({
       .then((res) => this.chat = res);
     },
     openWebsocket(chatId: number) {
-      console.log("socket");
       if (this.WEB_SOCKET.readyState != undefined) {
         this.$store.commit("closeSocket");
       }
@@ -55,7 +54,6 @@ export default Vue.extend({
       if (this.CHAT_ID == 0) return;
       this.limit = minLimit;
       this.getChatMessages(this.CHAT_ID);
-      console.log("watch");
       this.openWebsocket(this.CHAT_ID);
       if (this.chat.id != this.CHAT_ID) {
         this.$store.dispatch("getLimitChatMessages", {
