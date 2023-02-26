@@ -1,144 +1,138 @@
 <template>
-  <div id="messages" >
-    <div id="fff" class="scroll" ref="changeMessage" v-if="scrollHandler" >
+  <div class="messages" id="messages">
+    <div class="scroll" ref="changeMessage" v-if="scrollHandler">
       <i class="el-icon-loading" v-if="loaderVisible"></i>
     </div>
-    <ul id="list"  class="" style="margin-left: 0; padding-left: 0">
+    <ul id="list">
       <li
-        style="list-style-type: none"
         v-for="(message, index) in MESSAGE_LIST"
         :key="message.id"
       >
-        <Message :message="message" :tail="isLast(message,index)" />
+        <PersonalMessage v-if="message.author == USER_ID" :message="message" :tail="isLast(message, index)" />
+        <UsersMessage v-else :message="message" :tail="isLast(message, index)" />
       </li>
     </ul>
- <div id="arrowTop"></div>
-
+    <div id="arrowTop"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { IMessage } from "@/store/models";
-import Message from "@/components/Messages/Message.vue";
 import Vue from "vue";
 import { mapGetters } from "vuex";
-const minLimit = 7
+import { IMessage } from "@/store/models";
+import UsersMessage from "@/components/Messages/UsersMessage.vue";
+import PersonalMessage from "@/components/Messages/PersonalMessage.vue";
+const minLimit = 8;
+
 export default Vue.extend({
   props: {
     chat: Object,
   },
-  data() {
+  data():{
+      loaderVisible: boolean,
+      limit: number,
+      msgLength: number,
+      scrollHandler: boolean,
+    } {
     return {
       loaderVisible: false,
       limit: minLimit,
       msgLength: 0,
-      scrollHandler: true
+      scrollHandler: true,
     };
   },
   components: {
-    Message,
+    PersonalMessage,
+    UsersMessage,
   },
   computed: {
-    ...mapGetters([
-      'MESSAGE_LIST',
-      'CHAT_ID'
-    ])
+    ...mapGetters(["MESSAGE_LIST", "CHAT_ID", "USER_ID"]),
   },
   watch: {
     CHAT_ID() {
-this.scrollTrigger()
-    }
+      this.scrollTrigger();
+    },
   },
   methods: {
-    isLast(message:IMessage, index: number): boolean {
-      if (index == this.MESSAGE_LIST?.length-1) {
+    isLast(message: IMessage, index: number): boolean {
+      if (index == this.MESSAGE_LIST?.length - 1) {
         return true;
+      } else if (message.author == this.MESSAGE_LIST[index + 1].author) {
+        return false;
       }
-       else if (message.author == this.MESSAGE_LIST[index+1].author) {
-        return false
-      }
-      return true
+      return true;
     },
-scrollTrigger() {
-  if (this.MESSAGE_LIST?.length == 0) {
-    return
-  }
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => {
-                if (entry.intersectionRatio > 0) {
-                  console.log("first")
-                  this.loaderVisible = true
-                  this.msgLength = this.MESSAGE_LIST?.length
-                  this.$store.dispatch("getLimitChatMessages", {
-                    chatId: this.CHAT_ID,
-           limit: this.limit
-          })
-          .then(() => {
-            console.log(this.msgLength)
-            console.log(this.MESSAGE_LIST?.length)
-              if (this.msgLength == this.MESSAGE_LIST.length) {
-                observer.disconnect()
+    scrollTrigger() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > 0) {
+            console.log("first");
+            this.loaderVisible = true;
+            this.msgLength = this.MESSAGE_LIST?.length;
+            this.$store
+            .dispatch("getLimitChatMessages", {
+              chatId: this.CHAT_ID,
+              limit: this.limit,
+            })
+            .then(() => {
+              document.getElementById("messages")?.scrollTo(0, 100)
+              this.loaderVisible = false;
+              if (!this.MESSAGE_LIST?.length) return
+              if (this.msgLength == this.MESSAGE_LIST?.length && this.MESSAGE_LIST?.length) {
+                console.log("disconnect");
+                observer.disconnect();
               }
-            this.limit+=6
-            this.loaderVisible = false
-            document.getElementById("messages")?.scrollTo(0, 100)
-            
-          } )
-      }
-    })
-  })
-  observer.observe(this.$refs.changeMessage as Element)
-},
+              this.limit += 6;
+              });
+          }
+        });
+      });
+      observer.observe(this.$refs.changeMessage as Element);
+    },
   },
-mounted() {
-  this.scrollTrigger()
-}
+  mounted() {
+    this.scrollTrigger();
+  },
 });
 </script>
-<!-- <div id="arrowTop" hidden></div>
 
-<script>
-
-  arrowTop.onclick = function() {
-    window.scrollTo(pageXOffset, 0);
-    // после scrollTo возникнет событие "scroll", так что стрелка автоматически скроется
-  };
-
-  window.addEventListener('scroll', function() {
-    arrowTop.hidden = (pageYOffset < document.documentElement.clientHeight);
-  }); -->
 <style scoped>
 li {
   margin: -8px 0;
+  list-style-type: none;
 }
-
 ul {
+  margin-left: 0; 
+  padding-left: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+#list {
   width: calc(50vw - 1em - 4px);
   display: flex;
   flex-direction: column;
 }
 
-#messages {
-overflow-x: hidden; 
+.messages {
+  overflow-x: hidden;
   overflow-y: auto;
   height: calc(100vh - 140px - 80px);
 }
 .scroll {
   height: 50px;
-    margin-bottom: 10px;
-    background: #0000;
-    font-size: 48px;
+  margin-bottom: 10px;
+  background: #0000;
+  font-size: 48px;
 }
 
-#messages::-webkit-scrollbar {
-      width: 1em;
-      } 
-      #messages::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-      }
-      #messages::-webkit-scrollbar-thumb {
-      background-color: #666;
-      outline: 1px solid #eee;
-      border-radius: 4px;
-      }
+.messages::-webkit-scrollbar {
+  width: 12px;
+}
+.messages::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.messages::-webkit-scrollbar-thumb {
+  background-color: #317d23e1;
+  border-radius: 4px;
+}
 </style>

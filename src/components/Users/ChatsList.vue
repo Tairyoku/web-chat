@@ -1,12 +1,8 @@
 <template>
   <div class="chatlist">
     <ul>
-      <li
-        style="list-style-type: none"
-        v-for="item in PRIVATE_CHAT_LIST"
-        :key="item.id"
-      >
-        <div class="" @click="click(item.id)">
+      <li v-for="item in PRIVATE_CHAT_LIST" :key="item.id">
+        <div class="" @click="getChat(item.id)">
           <ChatContainer :chat="item" />
         </div>
       </li>
@@ -16,12 +12,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ChatContainer from "@/components/Chats/ChatContainer.vue";
 import { mapGetters } from "vuex";
 import { IChat } from "@/store/models";
+import ChatContainer from "@/components/Chats/ChatContainer.vue";
 
 export default Vue.extend({
-  data() {
+  data(): {
+    privateChats: IChat[];
+  } {
     return {
       privateChats: [] as IChat[],
     };
@@ -29,14 +27,22 @@ export default Vue.extend({
   components: {
     ChatContainer,
   },
+  watch: {
+    UPDATER() {
+      this.$store.dispatch("getUserPrivateChats", this.USER_ID);
+    },
+  },
   methods: {
-    click(chatId: number) {
-      this.$store.commit("setChatId", chatId);
-      this.$router.push(`/chat/${chatId}`);
+    getChat(chatId: number) {
+      if (this.CHAT_ID != chatId) {
+        this.$router
+          .push(`/chat/${chatId}`)
+          .then(() => this.$store.commit("setChatId", chatId));
+      }
     },
   },
   computed: {
-    ...mapGetters(["WEB_SOCKET", "PRIVATE_CHAT_LIST"]),
+    ...mapGetters(["PRIVATE_CHAT_LIST", "CHAT_ID", "UPDATER", "USER_ID"]),
   },
 });
 </script>
@@ -44,9 +50,11 @@ export default Vue.extend({
 <style scoped>
 li {
   list-style-type: none;
+  margin-bottom: 16px;
 }
 
 ul {
+  padding-top: 12px;
   padding-inline-start: 0px;
   margin-block-start: 0;
   margin-block-end: 0;
@@ -55,18 +63,18 @@ ul {
 .chatlist {
   overflow-x: hidden;
   overflow-y: auto;
-  height: calc(100vh - 2px - 40px - 64.8px - 44px);
+  height: calc(100vh - 20px - 40px - 64.8px - 44px);
 }
 
 .chatlist::-webkit-scrollbar {
-  width: 1em;
+  width: 12px;
 }
 .chatlist::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
 }
 .chatlist::-webkit-scrollbar-thumb {
-  background-color: #666;
-  outline: 1px solid #eee;
+  background-color: #317d23e1;
+  /* outline: 1px solid rgb(182, 20, 20); */
   border-radius: 4px;
 }
 </style>

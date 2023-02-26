@@ -1,26 +1,22 @@
 <template>
-  <div id="container-block" @click="click"
-  >
+  <div class="container-block">
     <div class="container__icon">
-      <div class="" v-if="user.icon == ''">
-        {{ getChatIcon(user.username) }}
+      <div style="width: 60px;" v-if="user.icon == ''">
+        {{ getNameForIcon }}
       </div>
-      <div class="" v-else>
-        <el-image
+        <el-image v-else
           class="container__image"
-          :src="imgUrl"
+          :src="getImageUrl"
           :fit="fit"
-        ></el-image>
-      </div>
+        />
     </div>
 
     <div class="container__info">
-      <div style="margin-left: 8px;">{{ user.username }}</div>
+      <div class="container__name">{{ user.username }}</div>
       <Status :id="user.id" />
     </div>
   </div>
 </template>
-<!-- 'fill', 'contain', 'cover', 'none', 'scale-down'], -->
 <script lang="ts">
 import Vue from "vue";
 import Status from "@/components/Users/Status.vue";
@@ -28,11 +24,10 @@ import { mapGetters } from "vuex";
 import { IMAGE_SMALL } from "@/api/routes";
 
 export default Vue.extend({
-  name: "user-container",
-  data() {
+  data():{
+      fit: string,
+    } {
     return {
-      chatId: 0,
-      img: "",
       fit: "cover",
     };
   },
@@ -40,38 +35,21 @@ export default Vue.extend({
     user: Object,
   },
   methods: {
-    click() {
+    getChat() {
       this.$emit('click')
     },
-    getChatIcon(name: string): string {
-      return name?.length < 4 ? name : name?.split("").slice(0, 3).join("");
-    },
-    // getChat() {
-    //   this.$store.dispatch("createPrivateChat", this.user.id).
-    //   then((res) => {
-    //     this.$router.push(`/chat/${res}`);
-    //     if (this.WEB_SOCKET.readyState != undefined) {
-    //       this.$store.commit("closeSocket");
-    //     }
-    //     this.$store.dispatch("openWebsocket", res);
-    //     this.$store.dispatch("getUserPrivateChats", this.USER_ID);
-
-    //   });
-    // },
   },
   components: {
     Status,
   },
   computed: {
-    ...mapGetters([
-      "WEB_SOCKET",
-      'USER_ID',
-    ]),
-    imgUrl() {
-      if (this.user.icon != "") {
-      return IMAGE_SMALL(this.user.icon)
-      }
-    }
+    getImageUrl(): string {
+      if (this.user.icon) return IMAGE_SMALL(this.user.icon);
+      return ""
+    },
+    getNameForIcon(): string {
+      return this.user.username?.length < 4 ? this.user.username : this.user.username?.split("").slice(0, 3).join("");
+    },
   },
 });
 </script>
@@ -82,44 +60,46 @@ export default Vue.extend({
   justify-content: center;
   text-align: center;
   align-items: center;
-  font-size: 24px;
-    height: 52px;
-    width: 52px;
-    border-radius: 26px;
+  font-size: 28px;
+  height: 60px;
+  width: 60px;
+  margin: 0 16px;
+  border-radius: 30px;
   color: white;
-  background-color: rgb(207, 49, 186);
+  background-color: rgb(232, 97, 47);
 }
-#container-block {
-  color: black;
+.container-block {
+  cursor: pointer;
     height: 52px;
     border-radius: 12px;
+    align-items: center;
     padding: 12px;
     margin: 8px;
   background-color: rgba(207, 49, 186, 0);
-    justify-content: space-evenly;
+    justify-content: space-between;
     display: flex;
     border: 2px solid #c1ab18;
     box-shadow: 2px -2px 4px 4px #c1ab1882;
 }
+.container__name {
+ margin-left: 8px; 
+  font-size: larger;
+}
 .container__image {
-  width: 52px;
-  height: 52px;
-  border-radius: 26px;
+  height: 60px;
+    width: 60px;
+    border-radius: 30px;
   display: flex;
 }
 .container__info {
-      color: black;
-    width: 70%;
-    flex-wrap: wrap;
+  width: -webkit-fill-available;
     display: flex;
-    align-content: flex-start;
-    justify-content: flex-start;
     font-size: 16px;
     text-align: start;
-    padding-left: 4px;
+    padding-left: 24px;
     overflow: hidden;
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: space-around;
 }
 
 

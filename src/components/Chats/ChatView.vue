@@ -17,21 +17,22 @@
           </div>
           <div v-else>
             <el-input
-            class="chat__create-form"
+              class="chat__create-form"
               v-model="chatName"
               style="margin-bottom: 4px"
               placeholder="Введіть назву"
             />
             <div style="display: flex; justify-content: space-between">
-              <el-button class="chat__create-form" v-on:click="createChat"> Створити </el-button>
-              <el-button class="chat__create-form" v-on:click="cancelCreate"> Назад </el-button>
+              <el-button class="chat__create-form" v-on:click="createChat">
+                Створити
+              </el-button>
+              <el-button class="chat__create-form" v-on:click="cancelCreate">
+                Назад
+              </el-button>
             </div>
           </div>
         </li>
-        <li
-          v-for="item in PUBLIC_CHAT_LIST"
-          :key="item.id"
-        >
+        <li v-for="item in PUBLIC_CHAT_LIST" :key="item.id">
           <div @click="openChat(item.id)">
             <ChatContainer :chat="item" />
           </div>
@@ -61,11 +62,15 @@ export default Vue.extend({
     ChatContainer,
     Search,
   },
+  computed: {
+    ...mapGetters(["PUBLIC_CHAT_LIST", "USER_ID", "CHAT_ID", "UPDATER"]),
+  },
   methods: {
     openChat(chatId: number) {
-      this.$store.commit("setChatId", chatId);
       if (this.CHAT_ID != chatId) {
-      this.$router.push(`/chat/${chatId}`);
+        this.$router
+          .push(`/chat/${chatId}`)
+          .then(() => this.$store.commit("setChatId", chatId));
       }
     },
     setInputChatVisible() {
@@ -73,10 +78,9 @@ export default Vue.extend({
     },
     createChat() {
       if (this.chatName?.length == 0) return;
-      this.$store.dispatch("createPublicChat", this.chatName)
-      .then(() => {
-        this.$store.dispatch("getUserPublicChats", this.USER_ID);
-      });
+      this.$store
+        .dispatch("createPublicChat", this.chatName)
+        .then(() => this.$store.dispatch("getUserPublicChats", this.USER_ID));
       this.cancelCreate();
     },
     cancelCreate() {
@@ -84,13 +88,10 @@ export default Vue.extend({
       this.setInputChatVisible();
     },
   },
-  computed: {
-    ...mapGetters([
-      "PUBLIC_CHAT_LIST", 
-      "WEB_SOCKET", 
-      "USER_ID",
-      'CHAT_ID'
-    ]),
+  watch: {
+    UPDATER() {
+      this.$store.dispatch("getUserPublicChats", this.USER_ID);
+    },
   },
 });
 </script>
@@ -120,35 +121,50 @@ ul {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-    padding: 12px;
-    background-color: rgba(207, 49, 186, 0);
-    /* justify-content: space-evenly; */
-    /* display: flex; */
-    border: 2px solid #c1ab18;
-    box-shadow: 2px -2px 4px 4px #c1ab1882;
-    margin: 8px;
-    color: #245f1a;
-    margin-bottom: 16px;
+  padding: 12px;
+  background-color: rgba(207, 49, 186, 0);
+  border: 2px solid #c1ab18;
+  box-shadow: 2px -2px 4px 4px #c1ab1882;
+  margin: 8px;
+  color: #245f1a;
+  margin-bottom: 16px;
 }
 .chat__create-button {
   height: 48px;
+  cursor: pointer;
   font-size: 24px;
-    display: contents;
+  display: contents;
 }
 .chat__create-form {
   box-shadow: 0px 0px 2px 2px #c1ab1882;
+  color: #245f1a;
   border-radius: 8px;
-
 }
-.chat-view__list::-webkit-scrollbar {
-  width: 1em;
+:deep(.el-input__inner:focus),
+:deep(.el-input__inner:hover) {
+  border-color: #afec4d;
 }
-.chat-view__list::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+:deep(.el-input__inner) {
+  color: #245f1a;
 }
-.chat-view__list::-webkit-scrollbar-thumb {
-  background-color: #666;
-  outline: 1px solid #eee;
+:deep(.el-input__inner::placeholder) {
+  color: #245f1a8c;
+}
+:deep(.el-button:hover),
+:deep(.el-button:hover) {
+  color: #e0ce2b;
+  border-color: #eeff25;
+  background-color: #fbff8580;
+}
+.chat__list::-webkit-scrollbar {
+  width: 12px;
+}
+.chat__list::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.chat__list::-webkit-scrollbar-thumb {
+  background-color: #317d23e1;
+  /* outline: 1px solid rgb(182, 20, 20); */
   border-radius: 4px;
 }
 </style>

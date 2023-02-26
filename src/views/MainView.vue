@@ -27,14 +27,13 @@ export default Vue.extend({
 Users,
 Chats,
   },
-//   updated() {
-//   this.$store.dispatch('getStarted')
-// },
 });
 </script>
+
 <style scoped>
 .main {
 display: flex;
+overflow: hidden;
 width: 100%;
 }
 .main__users {
@@ -42,17 +41,21 @@ width: 100%;
   width: 25vw;
   height: 100%;
   border: 1px solid gray;
+  border-top: none;
+  border-bottom: none;
 }
 .main__chats {
   height: 100%;
   width: 25vw;
   border: 1px solid gray;
   border-left: none;
+  border-top: none;
+  border-bottom: none;
   background: linear-gradient(#fffbef, rgb(213 213 64));
 }
 .main__messages {
   height: 100%;
-  background: linear-gradient(130deg, #ddff8f, #ffc0cb82);
+  background-color: #eee0adc1;
   width: -webkit-fill-available;
 }
 :deep(.el-input__inner) {

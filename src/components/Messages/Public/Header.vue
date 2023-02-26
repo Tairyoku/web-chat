@@ -1,21 +1,19 @@
 <template>
-  <div id="header">
+  <div class="header-public">
     <div class="for-justify"></div>
     
+    <div style="display: flex; align-items: center">
 <ChatInfo :item="chat" />
-<div class="">
-
 </div>
-<div class="">
+<div>
   <el-button
-  class="header__btn"
+  class="btn__menu"
       slot="reference"
       @click="setIsMenu"
       icon="el-icon-more-outline"
     >
   </el-button>
     <div 
-    class=""  
     v-if="isMenu" 
     @mouseleave="setIsMenu"
     >
@@ -27,15 +25,18 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ChatMenu from "@/components/Messages/Public/Menu.vue";
 import { mapGetters } from "vuex";
 import { IChat, IUser } from "@/store/models";
+import ChatMenu from "@/components/Messages/Public/Menu.vue";
 import ChatInfo from "@/components/Messages/Public/PublicContainer.vue"
 
 export default Vue.extend({
-  props: {
-  },
-  data() {
+  data():{
+      chatId: number,
+      chat: IChat,
+      isMenu: boolean,
+      user: IUser,
+    } {
     return {
       chatId: 0,
       chat: {} as IChat,
@@ -49,37 +50,38 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters([
-      'USER_ID',
       'CHAT_ID',
+      "UPDATER"
     ]),   
-       getChat() {
-      if (this.CHAT_ID != 0) {
-        this.$store.dispatch("getChat", this.CHAT_ID).
-        then((res) => {
-          this.chat = res
-        });
-      }
-    },
   },
   watch: {
     CHAT_ID() {
       this.chatId = this.CHAT_ID
-      this.getChat
+      this.getChat()
+    },
+    UPDATER() {
+      this.getChat()
     }
   },
   methods: {
     setIsMenu() {
       this.isMenu = !this.isMenu;
     },
+    getChat() {
+      if (this.CHAT_ID != 0) {
+        this.$store.dispatch("getChat", this.CHAT_ID)
+        .then((res) => this.chat = res);
+      }
+    },
   },
   mounted() {
-    this.getChat
+    this.getChat()
   }
 });
 </script>
 
 <style scoped>
-#header {
+.header-public {
   display: flex;
   height: 80px;    
   justify-content: space-between;
@@ -87,21 +89,18 @@ export default Vue.extend({
  border-bottom-left-radius: 12px;
  border-bottom-right-radius: 12px;
 }
-
-.el-icon-more-outline {
-  font-size: 24px;
-}
-
-.header__btn {
-  height: 100%; 
-  font-size: 32px; 
-  background-color: 
-  rgba(66, 168, 241, 0.086); 
+.btn__menu {
+  font-size: 32px;
   border-radius: 12px;
+  height: 100%;
+  color: #a9ae2d;
+  border:2px solid #a9ae2d;
+  background-color: rgba(66, 168, 241, 0);
 }
-/* :deep(.el-button) {
-    font-size: 32px;
-    border-radius: 12px;
-    background-color: rgba(66, 168, 241, 0.086);
-} */
+.btn__menu:hover,
+.btn__menu:focus {
+  color: #e0ce2b;
+  border: 2px solid #e0ce2b;
+  background-color: #fbff8500;
+}
 </style>

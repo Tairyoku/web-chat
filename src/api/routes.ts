@@ -1,6 +1,4 @@
 
-import axiosInstanse from ".";
-
 // get images
 export const IMAGE = (image:string) => "http://" + process.env.VUE_APP_BASE_URL + "/api/image/" + image
 export const IMAGE_SMALL = (image:string) => "http://" + process.env.VUE_APP_BASE_URL + "/api/image/resize-" + image

@@ -4,10 +4,9 @@
     v-on:input="searchHandler"
      >
       <el-input
-        class="search__input"
         v-model="searchName"
         placeholder="Знайти..."
-        @focus="setSearch(true)"
+        @focus="isSearchVisible(true)"
       >
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
         <i
@@ -18,9 +17,9 @@
       </el-input>
     </div>
     <div 
-    v-if="search" 
+    v-if="searchVivsible" 
     class="search__found"
-    @mouseleave="setSearch(false)"
+    @mouseleave="isSearchVisible(false)"
     >
       <div v-if="searchName?.length == 0"></div>
       <div 
@@ -28,15 +27,12 @@
       class="search__not-found"
       >Нікого не знайдено</div>
       <div v-else>
-        <ul class="" style="margin-left: 0; padding-left: 0; ">
+        <ul class="search__list" >
           <li
-            style="list-style-type: none; margin-bottom: 16px;"
             :key="item.id"
             v-for="item in USERS_SEARCH_RESULT"
           >
-          <div class="" >
             <UserContainer @click="getChat(item.id)" :user="item" />
-          </div>
           </li>
         </ul>
       </div>
@@ -44,18 +40,18 @@
   </div>
 </template>
 
-<!-- При фокусі пошукової строки, відчиняється вікно пошуку
-При введені значення у строку, виконується action: searchUsers,
-з введеними туди даними. Він змінює значення  -->
-
 <script lang="ts">
 import Vue from "vue";
-import UserContainer from "@/components/Users/UserContainer.vue";
 import { mapGetters } from "vuex";
+import UserContainer from "@/components/Users/UserContainer.vue";
+
 export default Vue.extend({
-  data() {
+  data():{
+      searchVivsible: boolean,
+      searchName: string,
+    } {
     return {
-      search: false,
+      searchVivsible: false,
       searchName: "",
     };
   },
@@ -65,16 +61,11 @@ export default Vue.extend({
   computed: {
     ...mapGetters([
       'USERS_SEARCH_RESULT',
-      "WEB_SOCKET",
-      'USER_ID',
     ]),
   },
-  methods: {
-    click() {
-      console.log("click")
-    },
-    setSearch(res: boolean) {
-      this.search = res;
+  methods: { 
+    isSearchVisible(res: boolean) {
+      this.searchVivsible = res;
     },
     clearSearch() {
       this.searchName = "";
@@ -84,43 +75,47 @@ export default Vue.extend({
         this.$store.dispatch("searchUsers", this.searchName);
       }
     },
-      getChat(id: number) {
-        console.log("working")
-      this.$store.dispatch("createPrivateChat", id).
-      then((res) => {
-          this.$router.push(`/chat/${res}`);
-        // if (this.WEB_SOCKET.readyState != undefined) {
-        //   this.$store.commit("closeSocket");
-        // }
-        // this.$store.dispatch("openWebsocket", res);
-        this.$store.dispatch("getUserPrivateChats", this.USER_ID);
-
-      });
+getChat(id: number) {
+  this.$emit('getChat', id)
     },
   },
 });
 </script>
 
 <style scoped>
-.search__found {
-  background: linear-gradient(#fffbef, rgb(213 213 64));
-  position: absolute;
-  z-index: 3;
+li {
+  list-style-type: none; 
+  margin-bottom: 16px;
+}
+ul {
+  margin-left: 0; 
+  padding-left: 0; 
+  overflow-x: inherit;
+    overflow-y: auto;
+    margin-block-start: 0;
+    height: calc(100vh - 32px);
+}
+.search {
   width: inherit;
-  height: -webkit-fill-available;
 }
 .search__search-line {
   display: flex;
   color: black;
   background-color: #fff0;
 }
-.search {
-  width: inherit;
-}
+:deep(.el-input__inner:hover),
+:deep(.el-input__inner:focus),
 :deep(.el-input__inner) {
-    background-color: #fff0;
-    border: 2px solid #245f1aab;
-    color: #245f1a;
+  background-color: #fff0;
+  border: 2px solid #245f1aab;
+  color: #245f1a;
+}
+.search__found {
+  background: linear-gradient(#fffbef, rgb(213 213 64));
+  position: absolute;
+  z-index: 3;
+  width: inherit;
+  height: -webkit-fill-available;
 }
 .search__not-found {
   font-size: 24px;
@@ -132,4 +127,14 @@ export default Vue.extend({
 :deep(.el-input__inner::placeholder) {
     color: #245f1aab;
 } 
+.search__list::-webkit-scrollbar {
+  width: 12px;
+}
+.search__list::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.search__list::-webkit-scrollbar-thumb {
+  background-color: #317d23e1;
+  border-radius: 4px;
+}
 </style>

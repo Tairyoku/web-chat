@@ -30,7 +30,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { watch } from "vue";
+import { mapGetters } from "vuex";
 
 export default Vue.extend({
   data(): {
@@ -46,6 +47,12 @@ export default Vue.extend({
       },
     };
   },
+  computed: {
+    ...mapGetters([
+      "USER_ID",
+      "USER"
+    ])
+  },
   methods: {
     signUpHandler() {
       if (this.form.username === "") {
@@ -60,14 +67,18 @@ export default Vue.extend({
           username: this.form.username,
           password: this.form.password,
         })
-        .then(() => {
-          this.form.username = "";
-          this.form.password = "";
-          // this.$store.dispatch("getStarted");
-          // this.$router.push("/")
+        .then(() => this.cancelHandler())
+        .then(()=> {
+          this.$store.dispatch("getUser", this.USER_ID)
+          .then((res) => {
+            console.log("getUser",res)
+          this.$store.commit("setUser", res);
+          this.$router.push('/')
+          });
         })
-      .then((res) => this.$router.push('/chat/'))
-    },
+       .then(() => {
+          })
+          },
     cancelHandler() {
       this.form.username = "";
       this.form.password = "";
@@ -76,9 +87,13 @@ export default Vue.extend({
       this.$router.push({ name: "sign-in" });
     },
   },
+  watch: {
+    USER_ID(){
+      this.$router.push("/")
+    }
+  },
 });
 
-//любой js код что я захочу, в том числе функции
 </script>
 
 <style scoped>
@@ -98,7 +113,6 @@ export default Vue.extend({
 }
 
 :deep(.el-input) {
-  /* margin-top: 20px; */
   margin: 15px auto;
   position: relative;
   font-size: 14px;
@@ -116,7 +130,9 @@ export default Vue.extend({
   margin-left: 52px;
   color: #245f1ab0;
 }
-
+:deep(.el-input__inner::placeholder) {
+  color: #245f1a8c;
+}
 .btns {
   display: flex;
   justify-content: space-between;
@@ -144,12 +160,12 @@ export default Vue.extend({
 :deep(.el-link.el-link--default:hover) {
   color: #a9ae2d;
 }
-
+:deep(.el-input__inner:focus),
 :deep(.el-input__inner:hover) {
   border-color: #afec4d;
 }
-
-:deep(.el-button:hover) {
+:deep(.el-button:hover),
+:deep(.el-button:focus) {
   color: #e0ce2b;
   border-color: #eeff25;
   background-color: #fbff8580;

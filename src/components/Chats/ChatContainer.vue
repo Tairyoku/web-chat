@@ -1,20 +1,19 @@
 <template>
-  <div id="chat-container">
+  <div class="chat-container">
     <div class="container__icon">
-      <div v-if="chat.icon == ''">
-        {{ getNameForIcon(chat?.name) }}
+      <div class="icon__name" v-if="chat.icon == ''">
+        {{ getNameForIcon }}
       </div>
-      <div v-else>
-        <el-image class="container__image" :src="getImageUrl" :fit="fit" />
-      </div>
+        <el-image v-else
+         class="container__image" 
+         :src="getImageUrl" 
+         :fit="fit" 
+         />
     </div>
-
     <div class="container__info">
-      <div style="margin-left: 8px">
-        {{ chat.name }}
-      </div>
+      <div class="container__name">{{ chat.name }}</div>
       <div v-if="chat.types != 'private'">
-        {{ numberOfUsersOnChat }} {{ getTypeByNumOfUsersInChat }}
+       <em> {{ numberOfUsersOnChat }} {{ getTypeByNumOfUsersInChat }}</em>
       </div>
     </div>
   </div>
@@ -22,11 +21,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapGetters } from "vuex";
 import { IMAGE_SMALL } from "@/api/routes";
+import { mapGetters } from "vuex";
 
 export default Vue.extend({
-  data() {
+  data():{
+    numberOfUsersOnChat: number,
+    fit: string
+  } {
     return {
       numberOfUsersOnChat: 0,
       fit: "cover",
@@ -35,17 +37,18 @@ export default Vue.extend({
   props: {
     chat: Object,
   },
-  methods: {
-    getNameForIcon(name: string): string {
-      return name.length < 4 ? name : name.split("").slice(0, 3).join("");
-    },
-  },
   computed: {
-    ...mapGetters(["USER_ID"]),
+    ...mapGetters([
+      "UPDATER"
+    ]),
     getImageUrl(): string {
-      return IMAGE_SMALL(this.chat.icon);
+      if (this.chat.icon) return IMAGE_SMALL(this.chat.icon);
+      return ""
     },
-    getTypeByNumOfUsersInChat() {
+    getNameForIcon(): string {
+      return this.chat.name?.length < 4 ? this.chat.name : this.chat.name?.split("").slice(0, 3).join("");
+    },
+    getTypeByNumOfUsersInChat(): string {
       switch (this.numberOfUsersOnChat) {
         case 1:
           return "користувач";
@@ -58,23 +61,33 @@ export default Vue.extend({
       }
     },
   },
+  methods: {
+    getNumOfUsers() {
+      this.$store.dispatch("getChatUsers", this.chat.id)
+    .then((res) => this.numberOfUsersOnChat = res.size);
+  },
+  },
+  watch:  {
+    UPDATER() {
+      this.getNumOfUsers()
+    }
+  },
   mounted() {
-    this.$store.dispatch("getChatUsers", this.chat.id).then((res) => {
-      this.numberOfUsersOnChat = res.size;
-    });
+this.getNumOfUsers()
   },
 });
 </script>
 
 <style scoped>
-#chat-container {
-  color: black;
+.chat-container {
+  cursor: pointer;
     height: 52px;
     border-radius: 12px;
+    align-items: center;
     padding: 12px;
     margin: 8px;
   background-color: rgba(207, 49, 186, 0);
-    justify-content: space-evenly;
+    justify-content: space-between;
     display: flex;
     border: 2px solid #c1ab18;
     box-shadow: 2px -2px 4px 4px #c1ab1882;
@@ -84,31 +97,36 @@ export default Vue.extend({
   justify-content: center;
   text-align: center;
   align-items: center;
-  font-size: 24px;
-  height: 52px;
-  width: 52px;
-  border-radius: 26px;
+  font-size: 28px;
+  height: 60px;
+  width: 60px;
+  margin: 0 16px;
+  border-radius: 30px;
   color: white;
-  background-color: rgb(207, 49, 186);
+  background-color: rgb(232, 97, 47);
+}
+.icon__name {
+  width: 60px;
+}
+.container__name {
+ margin-left: 8px; 
+  font-size: larger;
 }
 .container__image {
-  width: 52px;
-  height: 52px;
-  border-radius: 26px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
   display: flex;
 }
 .container__info {
-  color: black;
-  width: 70%;
-  flex-wrap: wrap;
-  display: flex;
-  align-content: flex-start;
-  justify-content: space-around;
-  font-size: 16px;
-  text-align: start;
-  padding-left: 4px;
-  overflow: hidden;
-  flex-direction: column;
-  align-items: flex-start;
+    width: -webkit-fill-available;
+    display: flex;
+    font-size: 16px;
+    text-align: start;
+    padding-left: 24px;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-around;
 }
+
 </style>

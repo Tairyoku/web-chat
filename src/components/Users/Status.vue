@@ -1,23 +1,23 @@
 <template>
     <div id="status-block">
-        <div class="status__friend" v-if="isFriend">
-            <span>Friend</span>
+        <div class="status__friend" v-if="isFriendList">
+            <span>Друг</span>
             <i class="el-icon-circle-check"></i>
         </div>
         <div class="status__BL" v-if='isInBlackList'>
-            <span>Blocked</span>
+            <span>Заблокован</span>
             <i class="el-icon-circle-close"></i>
         </div>
         <div class="status__onBL" v-if='hasYouOnBlackList'>
-            <span>In BL</span>
+            <span>у блоці</span>
             <i class="el-icon-warning-outline"></i>
         </div>
         <div class="status__invite" v-if='hasYourFriendshipRequire'>
-            <span>Invited</span>
+            <span>Запрошено</span>
             <i class="el-icon-question"></i>
         </div>
         <div class="status__invite" v-if='friendshipRequire'>
-            <span>Require</span>
+            <span>Запит</span>
             <i class="el-icon-question"></i>
         </div>
     </div>
@@ -28,7 +28,6 @@
 import { mapGetters } from "vuex";
   
   export default Vue.extend({
-    name: "status-block",
     props: {
         id: Number
     },
@@ -40,7 +39,7 @@ import { mapGetters } from "vuex";
         'ID_LIST_OF_SENT_INVITES_TO_FRIENDS',
         'ID_LIST_OF_FRIENDSHIP_REQUIRE',
       ]),
-      isFriend():boolean {
+      isFriendList():boolean {
         return this.ID_LIST_OF_FRIEND_LIST.includes(this.id)
       },
       isInBlackList():boolean {
@@ -56,7 +55,6 @@ import { mapGetters } from "vuex";
         return this.ID_LIST_OF_FRIENDSHIP_REQUIRE.includes(this.id)
       },
     },
-    methods: {},
   })
   
   </script>
