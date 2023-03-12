@@ -60,6 +60,24 @@ export default Vue.extend({
       'CHAT_ID'
     ]),
     friends(): IUser[] {
+      // return [
+      //   {
+      //     id: 1,
+      //     username: "first",
+      //     },
+      //   {
+      //     id: 2,
+      //     username: "firstfirstfirstfirstfirstfirst",
+      //     },
+      //   {
+      //     id: 3,
+      //     username: "firstfirstfirstfirstfirstfirstfirstfirstfirstfirst",
+      //     },
+      //   {
+      //     id: 4,
+      //     username: "last",
+      //     },
+      // ] as IUser[]
       return this.FRIEND_LIST.concat(this.SENT_INVITES_TO_FRIENDS);
     },
     blackList() {

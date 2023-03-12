@@ -4,6 +4,10 @@
       <i style="margin-right: 16px" class="el-icon-warning"></i>
       <em>Ви не можете відправляти повідомлення цьому користувачу</em>
     </div>
+    <div class="addToChat" v-if="!getIsOnChat">
+      Приєднатися до чату
+      <el-button @click="addUserToChat">Приєднатися</el-button>
+    </div>
     <div class="create__window">
       <textarea
         class="create__text"
@@ -20,34 +24,51 @@
 </template>
 
 <script lang="ts">
-import { IUser } from "@/store/models";
+import { IChat, IUser } from "@/store/models";
 import Vue from "vue";
 import { mapGetters } from "vuex";
 
 export default Vue.extend({
-  data():{
-      text: string,
-      user: IUser,
-    } {
+  data(): {
+    text: string;
+    user: IUser;
+    chatUsers: IUser[];
+  } {
     return {
       text: "",
+      chatUsers: [] as IUser[],
       user: {} as IUser,
     };
   },
   watch: {
     CHAT_ID() {
-      this.$store
-        .dispatch("getById", this.CHAT_ID)
-        .then((res) => this.user = res.user);
+      this.getData();
+    },
+    UPDATER() {
+      this.getData();
     },
   },
   methods: {
+    getData() {
+      this.$store
+        .dispatch("getById", this.CHAT_ID)
+        .then((res) => (this.user = res.user));
+      this.$store
+        .dispatch("getChatUsers", this.CHAT_ID)
+        .then((res) => (this.chatUsers = res.list));
+    },
     sendMessage() {
       if (this.text == "") return;
+      if (!this.getIsOnChat) {
+        this.$notify({
+          title: "Ви не належите до чату",
+          type: "warning",
+        });
+        return;
+      }
       if (this.getIsOnBlackList) {
         this.$notify({
           title: "Ви заблоковані",
-          text: "Ви не можете писати цьому користувачу",
           type: "warning",
         });
         return;
@@ -66,17 +87,41 @@ export default Vue.extend({
           );
         });
     },
+    addUserToChat() {
+      this.$store
+        .dispatch("addUserToChat", {
+          userId: this.USER_ID,
+          chatId: this.CHAT_ID,
+        })
+        .then(() => {
+          this.$notify({
+            title: "Ви приєдналися до чату",
+            type: "success",
+          });
+          this.getData();
+          this.WEB_SOCKET.send("update");
+        });
+    },
   },
   computed: {
-    ...mapGetters(["WEB_SOCKET", "CHAT_ID", "ID_LIST_OF_ON_BLACK_LISTS"]),
+    ...mapGetters([
+      "USER_ID",
+      "WEB_SOCKET",
+      "CHAT_ID",
+      "UPDATER",
+      "ID_LIST_OF_ON_BLACK_LISTS",
+    ]),
     getIsOnBlackList(): boolean {
       return this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.user.id);
     },
+    getIsOnChat(): boolean {
+      let list: number[] = [];
+      this.chatUsers.forEach((item) => list.push(item.id));
+      return list.includes(this.USER_ID);
+    },
   },
   mounted() {
-    this.$store
-      .dispatch("getById", this.CHAT_ID)
-      .then((res) => this.user = res.user);
+    this.getData();
   },
 });
 </script>
@@ -143,5 +188,30 @@ textarea::placeholder {
   border-bottom: none;
   padding: 4px 0;
   background-color: #ffc8c8;
+}
+.addToChat {
+  width: 90%;
+  color: #245f1a;
+  margin: 0px auto;
+  transform: translate(0, -40px);
+  border: 2px solid #245f1a;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: none;
+  background-color: #ddff8f;
+}
+:deep(.el-button) {
+  font-size: 16px;
+  margin: 4px 16px;
+  border-radius: 16px;
+  border: 2px groove #afec4d;
+  background-color: #ddff8f;
+  color: #245f1a;
+}
+:deep(.el-button:focus),
+:deep(.el-button:hover) {
+  color: #e0ce2b;
+  border-color: #eeff25;
+  background-color: #fbff8580;
 }
 </style>

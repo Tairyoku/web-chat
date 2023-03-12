@@ -8,15 +8,19 @@
           style="margin-top: 48px"
           placeholder="Як тебе звати?"
           v-model="form.username"
+          @input="usernameValidate"
         ></el-input>
+        <div class="validate">{{ validateUsername }}</div>
         <el-input
           class="input"
           placeholder="Вигадай надійний пароль"
           v-model="form.password"
           show-password
+          @input="passwordValidate"
         ></el-input>
+        <div class="validate">{{ validatePassword }}</div>
         <div class="btns">
-          <el-button class="btn" v-on:click="signUpHandler"
+          <el-button class="btn" @click="signUpHandler"
             >Зареєструватися</el-button
           >
           <el-button class="btn" v-on:click="cancelHandler">Очистити</el-button>
@@ -39,46 +43,97 @@ export default Vue.extend({
       username: string;
       password: string;
     };
+    validateUsername: string,
+        validatePassword: string,
   } {
     return {
       form: {
         username: "",
         password: "",
       },
+        validateUsername: "",
+        validatePassword: "",
     };
   },
   computed: {
     ...mapGetters([
       "USER_ID",
       "USER"
-    ])
+    ]),
   },
   methods: {
-    signUpHandler() {
-      if (this.form.username === "") {
-        return;
+    usernameValidate() {
+      if (this.form.username?.length == 0) {
+        this.validateUsername = "Введіть ім'я"
+        return
+      }
+      if (!/^[a-zа-яА-ЯёЁїЇіІєЄA-Z0-9_.]+$/.test(this.form.username)) {
+        this.validateUsername = "Дозволені лише літери, цифри, \" . \" або \" _ \""
+        return
+      }
+      if (!/^[a-zа-яА-ЯёЁїЇіІєЄA-Z]/.test(this.form.username)) {
+        this.validateUsername = "Ім'я повинно починатися з літери"
+        return
+      }
+      if (this.form.username?.length < 3 || this.form.username?.length > 20) {
+        this.validateUsername = "Довжина має бути від 3 до 20 символів"
+        return
+      }
+      this.validateUsername = ""
+    },
+    passwordValidate() {
+      if (this.form.password?.length == 0) {
+        this.validatePassword = "Введіть пароль"
+        return
+      }
+      if (!/(?=.*[a-zа-яіІєЄёї])/.test(this.form.password)) {
+        this.validatePassword = "Пароль повинен містити хоча б одну малу літеру"
+        return
+      }
+      if (!/(?=.*[A-ZА-ЯіІєЄЁЇ])/.test(this.form.password)) {
+        this.validatePassword = "Пароль повинен містити хоча б одну заголовну літеру"
+        return
+      }
+      if (!/(?=.*[0-9])/.test(this.form.password)) {
+        this.validatePassword = "Пароль повинен містити хоча б одну цифру"
+        return
+      }
+      if (!/(?=.*[!@#$%^&*])/.test(this.form.password)) {
+        this.validatePassword = "Пароль повинен містити хоча б один спецсимвол"
+        return
       }
       if (this.form.password?.length < 6) {
-        this.form.password = "";
-        return;
+        this.validatePassword = "Довжина має бути від 6 символів"
+        return
       }
+      this.validatePassword = ""
+    },
+    signUpHandler() {
+      if (this.validateUsername != "" || this.validatePassword != "") return;
       this.$store
         .dispatch("register", {
           username: this.form.username,
           password: this.form.password,
         })
-        .then(() => this.cancelHandler())
-        .then(()=> {
+        .then(err => {
+          if (err.response?.status == 409) {
+            this.validateUsername = "Ім'я користувача вже зайняте"
+            return
+          } else if (err.response?.status == 500) {
+            this.validateUsername = "Повторіть пізніше"
+            return
+          }
+          this.cancelHandler()
           this.$store.dispatch("getUser", this.USER_ID)
           .then((res) => {
-          this.$store.commit("setUser", res);
-          this.$router.push('/')
-          });
-        })
-       .then(() => {
+            this.$store.commit("setUser", res);
+            this.$router.push('/')
           })
+        })
           },
     cancelHandler() {
+      this.validatePassword = ""
+      this.validateUsername = ""
       this.form.username = "";
       this.form.password = "";
     },
@@ -89,7 +144,7 @@ export default Vue.extend({
   watch: {
     USER_ID(){
       this.$router.push("/")
-    }
+    },
   },
 });
 
@@ -133,10 +188,18 @@ export default Vue.extend({
   color: #245f1a8c;
 }
 .btns {
+  margin-top: 20px;
   display: flex;
   justify-content: space-between;
 }
 
+.validate {
+  font-size: 14px;
+    color: red;
+    margin-top: -12px;
+    text-align: left;
+    padding-left: 16px;
+}
 .form {
   width: 360px;
 }

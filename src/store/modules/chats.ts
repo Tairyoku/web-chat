@@ -33,12 +33,12 @@ export interface ChatState {
 }
 // states 4; getters 4; mutations 4; actions 13;
 const ChatModule: Module<ChatState, RootState> = ({
-  state: () => ({
+  state: {
     chatId: 0,
     privateChatList: [],
     publicChatList: [],
     searchChatsList: [],
-  }),
+  },
   getters: {
     CHAT_ID: (state: ChatState) => {
       return state.chatId;
@@ -81,9 +81,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .then((res) => {
           this.commit("setPublicChatList", res.data.list);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     /**
   * Повертає список ПУБЛІЧНИХ чатів, в яких знаходиться користувач, за його ID
@@ -96,9 +93,6 @@ const ChatModule: Module<ChatState, RootState> = ({
       await axiosInstanse
         .get(USER_PUBLIC(userId))
         .then((res) => data = res.data.list)
-        .catch((err) => {
-          console.log(err);
-        });
       return new Promise((resolve, reject) => {
         resolve(data);
       });
@@ -115,9 +109,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .then((res) => {
           this.commit("setPrivateChatList", res.data.list);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     /**
      * Змінює зображення чату
@@ -128,7 +119,6 @@ const ChatModule: Module<ChatState, RootState> = ({
     async changeChatIcon({ }, { chatId, image }) {
       await axiosInstanseFormData
         .put(CHANGE_CHAT_ICON(chatId), image)
-        .catch((err) => console.log(err));
     },
     /**
      * Створює новий ПУБЛІЧНИЙ чат
@@ -140,7 +130,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .post(CREATE_PUBLIC_CHAT, {
           "name": name,
         })
-        .catch((err) => console.log(err));
     },
     /**
      * Створює ПРИВАТНИЙ чат (якщо його ще нема)
@@ -156,9 +145,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .then((res) => {
           chatId = res.data.chatId;
         })
-        .catch((err) => {
-          console.log(err);
-        });
       return new Promise((resolve, reject) => {
         resolve(chatId);
       });
@@ -175,7 +161,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .then((res) => {
           chat = res.data.chat;
         })
-        .catch((err) => console.log(err));
       return new Promise((resolve, reject) => {
         resolve(chat);
       });
@@ -194,7 +179,6 @@ const ChatModule: Module<ChatState, RootState> = ({
           this.commit('setChatId', res.data.chat.id)
           data = res.data;
         })
-        .catch((err) => console.log(err));
       return new Promise((resolve, reject) => {
         resolve(data);
       });
@@ -218,7 +202,6 @@ const ChatModule: Module<ChatState, RootState> = ({
             size: res.data.length
           }
         })
-        .catch((err) => console.log(err));
       return new Promise((resolve, reject) => {
         resolve(data);
       });
@@ -237,9 +220,6 @@ const ChatModule: Module<ChatState, RootState> = ({
           this.dispatch("getUserPublicChats", this.state.authState.userId);
           this.dispatch("usersList", this.state.authState.userId);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     /**
  * Видаляє користувача з чату
@@ -252,9 +232,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .put(DELETE_FROM_CHAT(chatId), {
           "user_id": userId,
         })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     /**
 * Видаляє  чат
@@ -268,9 +245,6 @@ const ChatModule: Module<ChatState, RootState> = ({
           this.dispatch("getUserPublicChats", this.state.authState.userId);
           this.dispatch("getUserPrivateChats", this.state.authState.userId);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     /**
      * Оновлює список знайдених чатів за частиною назви
@@ -283,9 +257,6 @@ const ChatModule: Module<ChatState, RootState> = ({
         .then((res) => {
           this.commit("setSearchChatsList", res.data.list);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     },
   },
 });

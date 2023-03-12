@@ -166,6 +166,7 @@ export default Vue.extend({
   },
   methods: {
     blockUser() {
+      this.blockedVisible = false;
       this.$store.dispatch("addToBlackList", this.user.id)
       .then(() => {
         this.$store.dispatch("usersList", this.USER_ID);
@@ -175,10 +176,10 @@ export default Vue.extend({
           type: "success",
         });
         this.WEB_SOCKET.send("update info");
-        this.blockedVisible = false;
       });
     },
     addUserToChat(id: number) {
+      this.addToChatVisible = false;
       this.$store
         .dispatch("addUserToChat", {
           userId: this.user.id,
@@ -191,10 +192,10 @@ export default Vue.extend({
             type: "success",
           });
           this.WEB_SOCKET.send("update info");
-          this.addToChatVisible = false;
         });
     },
     deleteChat() {
+      this.deleteChatVisible = false;
       this.$store.dispatch("deleteChat", this.CHAT_ID)
       .then(() => {
         this.$notify({
@@ -204,20 +205,18 @@ export default Vue.extend({
         });
         this.$router.push("/chat/");
         this.WEB_SOCKET.send("update info");
-        this.deleteChatVisible = false;
       });
     },
     deleteFriend() {
+      this.deleteFriendVisible = false;
       this.$store.dispatch("deleteFriend", this.user.id)
       .then(() => {
         this.$store.dispatch("usersList", this.USER_ID);
         this.$notify({
           title: "Ви позбулися друга",
-          text: "Користувач вам більше не друг",
           type: "success",
         });
         this.WEB_SOCKET.send("update info");
-        this.deleteFriendVisible = false;
       });
     },
   },

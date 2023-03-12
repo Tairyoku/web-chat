@@ -54,6 +54,7 @@ export default new Vuex.Store<RootState>({
      */
     clearAllStateData({}) {
       this.commit("closeSocket");
+      window.localStorage.removeItem("token");
       this.commit("setSearchUsersList", [] as IUser[]);
       this.commit("setSearchChatsList", [] as IChat[]);
       this.commit("setUserId", 0);
@@ -78,9 +79,9 @@ export default new Vuex.Store<RootState>({
       this.commit("openWebsocket", chatId);
       this.state.socket.onmessage = (msg: any) => {
         if (msg.data == "send message") {
-          this.dispatch("getNewMessage", chatId);
+          this.dispatch("getNewMessage", chatId)
+          .then(() => this.commit("incrimentUpdater"))
         } else {
-          this.dispatch("usersList", this.state.authState.userId);
         this.commit("incrimentUpdater");
         }
 

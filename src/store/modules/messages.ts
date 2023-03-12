@@ -43,9 +43,6 @@ const MessagesModule: Module<MessagesState, RootState> = ({
                         this.commit("setChatMessages", res.data.list);
                     }
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
          * Повертає список повідомлень чату
@@ -61,9 +58,6 @@ const MessagesModule: Module<MessagesState, RootState> = ({
                 .then((res) => {
                     this.commit("setChatMessages", res.data.list);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
          * Створює повідомлення та оновлює список повідомлень чату
@@ -75,7 +69,6 @@ const MessagesModule: Module<MessagesState, RootState> = ({
                 .post(CREATE_MESSAGE(chatId), {
                     "text": text,
                 })
-                .catch((err) => console.log(err));
         },
     },
 });

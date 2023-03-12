@@ -23,10 +23,10 @@ export interface AuthState {
 
 // states 2; getters 2; mutations 2; actions 7;
 const AuthModule: Module<AuthState, RootState> = ({
-    state: () => ({
+    state: {
       userId: 0,
       user: {} as IUser,
-    }),
+    },
     getters: {
       USER: (state) => {
         return state.user;
@@ -70,7 +70,6 @@ const AuthModule: Module<AuthState, RootState> = ({
             });
           })
           .catch((err) => {
-            console.log(err)
             if (router.currentRoute.name != "sign-up") {
               router.push({ name: "sign-up" });
             }
@@ -84,6 +83,7 @@ const AuthModule: Module<AuthState, RootState> = ({
        * @param {string} password - пароль користувача
        */
       async register({ }, { username, password }) {
+        let data = {} as any
         await axiosInstanse
           .post(SIGN_UP, {
             "username": username,
@@ -99,8 +99,11 @@ const AuthModule: Module<AuthState, RootState> = ({
               return config
             })
           this.dispatch('getStarted')
-          })
-          .catch((err) => console.log(err));
+        })
+        .catch((err) => data = err);
+        return new Promise((resolve, reject) => {
+        resolve(data);
+        })
       },
        /**
       * Отримує від користувача ім'я та пароль, 
@@ -110,6 +113,7 @@ const AuthModule: Module<AuthState, RootState> = ({
       * @param {string} password - пароль користувача
       */
       async login({ }, { username, password }) {
+        let data = {} as any
         await axiosInstanse
           .post(SIGN_IN, {
             "username": username,
@@ -126,8 +130,12 @@ const AuthModule: Module<AuthState, RootState> = ({
             })
           this.dispatch('getStarted')
           })
-          .catch((err) => console.log(err));
-      },
+          .catch((err) => {
+            data = err });
+          return new Promise((resolve, reject) => {
+          resolve(data);
+          }) 
+             },
       /**
        * Розлогінює користувача (видаляє токен)
        */
@@ -143,13 +151,17 @@ const AuthModule: Module<AuthState, RootState> = ({
        * @param {string} newPassword - новий пароль
        */
       async changePassword({ }, { oldPassword, newPassword }) {
+        let data = {} as any
         await axiosInstanse
           .put(CHANGE_PASSWORD, {
             "old_password": oldPassword,
             "new_password": newPassword,
           })
-          .catch((err) => console.log(err));
-      },
+          .catch((err) => data = err);
+          return new Promise((resolve, reject) => {
+          resolve(data);
+          })      
+        },
           /**
        * Отримує від користувача нове ім'я, змінює ім'я користувача
        *  на нове, за умови, що воно не зайнято
@@ -157,12 +169,16 @@ const AuthModule: Module<AuthState, RootState> = ({
        * @param {string} username - ім'я користувача
        */
       async changeUsername({ }, { username }) {
+        let data = {} as any
         await axiosInstanse
           .put(CHANGE_USERNAME, {
             "username": username,
           })
-          .catch((err) => console.log(err));
-      },
+          .catch((err) => data = err);
+          return new Promise((resolve, reject) => {
+          resolve(data);
+          })      
+        },
           /**
        * Отримує від користувача новий файл зображення, та оновнює його
        * 
@@ -171,7 +187,6 @@ const AuthModule: Module<AuthState, RootState> = ({
       async changeIcon({ }, image: any) {
         await axiosInstanseFormData
           .put(CHANGE_ICON, image)
-          .catch((err) => console.log(err));
       },
     },
   });

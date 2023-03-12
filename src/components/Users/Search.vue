@@ -1,14 +1,19 @@
 <template>
-  <div class="search">
+  <div class="search"
+  @mouseleave="isSearchVisible(false)"
+  >
     <div class="search__search-line"
     v-on:input="searchHandler"
-     >
-      <el-input
+    >
+    <el-input
         v-model="searchName"
         placeholder="Знайти..."
         @focus="isSearchVisible(true)"
       >
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        <i 
+        slot="prefix" 
+        class="el-input__icon el-icon-search"
+        ></i>
         <i
           slot="suffix"
           class="el-input__icon el-icon-circle-close"
@@ -19,20 +24,23 @@
     <div 
     v-if="searchVivsible" 
     class="search__found"
-    @mouseleave="isSearchVisible(false)"
     >
       <div v-if="searchName?.length == 0"></div>
       <div 
-      v-else-if="USERS_SEARCH_RESULT?.length == 0"
+      v-else-if="USERS_SEARCH_RESULT?.length == 0 || validateName"
       class="search__not-found"
-      >Нікого не знайдено</div>
+      >
+      Нікого не знайдено
+    </div>
       <div v-else>
         <ul class="search__list" >
           <li
             :key="item.id"
             v-for="item in USERS_SEARCH_RESULT"
           >
-            <UserContainer @click="getChat(item.id)" :user="item" />
+          <div class="" @click="getChat(item.id)">
+            <UserContainer :user="item" />
+          </div>
           </li>
         </ul>
       </div>
@@ -60,14 +68,18 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters([
-      'USERS_SEARCH_RESULT',
+      'USERS_SEARCH_RESULT'
     ]),
+    validateName():boolean {
+     return !/^[a-zа-яА-ЯёЁїЇіІєЄA-Z]/.test(this.searchName)
+    }
   },
   methods: { 
     isSearchVisible(res: boolean) {
       this.searchVivsible = res;
     },
     clearSearch() {
+      this.isSearchVisible(false)
       this.searchName = "";
     },
     searchHandler() {
@@ -109,6 +121,7 @@ ul {
   background-color: #fff0;
   border: 2px solid #245f1aab;
   color: #245f1a;
+  font-size: 18px;
 }
 .search__found {
   background: linear-gradient(#fffbef, rgb(213 213 64));

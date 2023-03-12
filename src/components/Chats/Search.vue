@@ -1,13 +1,15 @@
 <template>
-  <div class="search">
+  <div class="search" 
+  @mouseleave="isSearchWindowVisible(false)"
+  >
     <div class="search__search-line" 
+    v-on:input="searchHandler"
     >
     <el-input
-    v-on:input="searchHandler"
         v-model="searchName"
         placeholder="Знайти..."
         @focus="isSearchWindowVisible(true)"
-      >
+    >
         <i 
         slot="prefix" 
         class="el-input__icon el-icon-search"
@@ -21,11 +23,11 @@
     </div>
     <div 
     v-if="searchVisible" 
-    @mouseleave="isSearchWindowVisible(false)"
-    class="search__found">
+    class="search__found"
+    >
       <div v-if="searchName?.length == 0"></div>
       <div 
-      v-else-if="CHATS_SEARCH_RESULT?.length == 0"
+      v-else-if="CHATS_SEARCH_RESULT?.length == 0 || validateName"
     class="search__not-found"
       >
       Чатів не знайдено
@@ -37,7 +39,9 @@
             :key="item.id"
             v-for="item in CHATS_SEARCH_RESULT"
           >
-  <ChatContainer @click="getChat(item.id)" :chat="item" />
+          <div class="" @click="getChat(item.id)">
+            <ChatContainer :chat="item" />
+          </div>
           </li>
         </ul>
       </div>
@@ -66,18 +70,22 @@ export default Vue.extend({
       "CHATS_SEARCH_RESULT",
       "CHAT_ID"
     ]),
+    validateName():boolean {
+     return !/^[a-zа-яА-ЯёЁїЇіІєЄA-Z]/.test(this.searchName)
+    }
   },
   methods: {
     getChat(chatId: number) {
       if (this.CHAT_ID != chatId) {
-      this.$store.commit("setChatId", chatId);
-      this.$router.push(`/chat/${chatId}`);
+        this.$router.push(`/chat/${chatId}`)
+      .then(() => this.$store.commit("setChatId", chatId));
       }
     },
     isSearchWindowVisible(res: boolean) {
       this.searchVisible = res;
     },
     clearSearch() {
+      this.isSearchWindowVisible(false)
       this.searchName = "";
     },
     searchHandler() {

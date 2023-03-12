@@ -134,7 +134,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then((res) => {
                     user = res.data.user;
                 })
-                .catch((err) => console.log(err));
             return new Promise((resolve, reject) => {
                 resolve(user);
             });
@@ -150,9 +149,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then((res) => {
                     this.commit("setSearchUsersList", res.data.list);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
          * Оновлює списки усіх типів відносин користувача
@@ -171,9 +167,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                     this.commit("setInvitationsList", res.data.requires);
                     this.commit("setFriendsList", res.data.friends);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
          * Змінює статус відносин між активним користувачем та поданим у аргументі
@@ -187,9 +180,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then(() => {
                     this.dispatch("usersList", this.state.authState.userId);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
      * Видаляє статус відносин між активним користувачем та поданим у аргументі
@@ -203,9 +193,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then(() => {
                     this.dispatch("usersList", this.state.authState.userId);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
      * Змінює статус відносин між активним користувачем та поданим у аргументі
@@ -219,9 +206,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then(() => {
                     this.dispatch("usersList", this.state.authState.userId);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
  * Видаляє статус відносин між поданим у аргументі та активним користувачами 
@@ -235,9 +219,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then(() => {
                     this.dispatch("usersList", this.state.authState.userId);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
  * Змінює статус відносин між активним користувачем та поданим у аргументі
@@ -251,9 +232,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then(() => {
                     this.dispatch("usersList", this.state.authState.userId);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
 * Видаляє статус відносин між поданим у аргументі та активним користувачами 
@@ -267,9 +245,6 @@ const UsersModule: Module<UsersState, RootState> = ({
                 .then(() => {
                     this.dispatch("usersList", this.state.authState.userId);
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
         },
         /**
 * Видаляє статус відносин між поданим у аргументі та активним користувачами 

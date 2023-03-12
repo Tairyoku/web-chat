@@ -10,18 +10,20 @@
             style="height: 40px"
             class="chat__create-button"
           >
-            <span slot="label">
+            <span style="margin: 12px 0;" slot="label">
               <i class="el-icon-circle-plus-outline"></i>
               Новий чат
             </span>
           </div>
-          <div v-else>
+          <div style="width: 90%;" v-else>
             <el-input
               class="chat__create-form"
               v-model="chatName"
               style="margin-bottom: 4px"
               placeholder="Введіть назву"
+              @input="nameValidate"
             />
+        <div class="validate">{{ validateName }}</div>
             <div style="display: flex; justify-content: space-between">
               <el-button class="chat__create-form" v-on:click="createChat">
                 Створити
@@ -33,9 +35,7 @@
           </div>
         </li>
         <li v-for="item in PUBLIC_CHAT_LIST" :key="item.id">
-          <div @click="openChat(item.id)">
-            <ChatContainer :chat="item" />
-          </div>
+            <ChatContainer :chat="item" @click="openChat(item.id)" />
         </li>
       </ul>
     </div>
@@ -52,9 +52,11 @@ export default Vue.extend({
   data(): {
     chatName: string;
     inputChatVisible: boolean;
+    validateName: string;
   } {
     return {
       chatName: "",
+      validateName: "",
       inputChatVisible: false,
     };
   },
@@ -66,6 +68,25 @@ export default Vue.extend({
     ...mapGetters(["PUBLIC_CHAT_LIST", "USER_ID", "CHAT_ID", "UPDATER"]),
   },
   methods: {
+    nameValidate() {
+      if (this.chatName?.length == 0) {
+        this.validateName = "Введіть назву"
+        return
+      }
+      if (!/^[a-zа-яА-ЯёЁїЇіІєЄA-Z0-9_.]+$/.test(this.chatName)) {
+        this.validateName = "Дозволені лише літери, цифри, \" . \" або \" _ \""
+        return
+      }
+      if (!/^[a-zа-яА-ЯёЁїЇіІєЄA-Z]/.test(this.chatName)) {
+        this.validateName = "Назва повинно починатися з літери"
+        return
+      }
+      if (this.chatName?.length < 3 || this.chatName?.length > 20) {
+        this.validateName = "Довжина має бути від 3 до 20 символів"
+        return
+      }
+      this.validateName = ""
+    },
     openChat(chatId: number) {
       if (this.CHAT_ID != chatId) {
         this.$router
@@ -77,13 +98,14 @@ export default Vue.extend({
       this.inputChatVisible = !this.inputChatVisible;
     },
     createChat() {
-      if (this.chatName?.length == 0) return;
+      if (this.validateName != "") return;
       this.$store
         .dispatch("createPublicChat", this.chatName)
         .then(() => this.$store.dispatch("getUserPublicChats", this.USER_ID));
       this.cancelCreate();
     },
     cancelCreate() {
+      this.validateName = "";
       this.chatName = "";
       this.setInputChatVisible();
     },
@@ -116,7 +138,6 @@ ul {
   height: -webkit-fill-available;
 }
 .chat__create {
-  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,12 +161,19 @@ ul {
   color: #245f1a;
   border-radius: 8px;
 }
+.validate {
+  font-size: 14px;
+    color: red;
+    margin-bottom: 8px;
+    text-align: left;
+}
 :deep(.el-input__inner:focus),
 :deep(.el-input__inner:hover) {
   border-color: #afec4d;
 }
 :deep(.el-input__inner) {
   color: #245f1a;
+  font-size: 18px;
 }
 :deep(.el-input__inner::placeholder) {
   color: #245f1a8c;
