@@ -55,7 +55,8 @@
       <el-col :span="8">
         <el-card shadow="hover">
           Змінити зображення
-          <i class="el-icon-circle-plus"></i>
+          <!-- <i class="el-icon-circle-plus"></i> -->
+          <i class="el-icon-picture"></i>
         </el-card>
       </el-col>
     </div>

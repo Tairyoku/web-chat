@@ -42,12 +42,12 @@ export default Vue.extend({
 
 <style>
 .message__date {
-  margin: 0 auto;
+  margin: -10px auto;
   padding: 8px 24px;
   cursor: default;
   border: 2px solid #eeff25;
-  color: #469422;
-  background-color: #fbff85;
+  color: #929224;
+  background-color: #fbff8580;
   border-radius: 16px;
   width: fit-content;
 }

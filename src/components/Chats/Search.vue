@@ -8,6 +8,7 @@
     <el-input
         v-model="searchName"
         placeholder="Знайти..."
+        id="search__chats"
         @focus="isSearchWindowVisible(true)"
     >
         <i 
@@ -82,6 +83,7 @@ export default Vue.extend({
       }
     },
     isSearchWindowVisible(res: boolean) {
+      if (res == false) document.getElementById('search__chats')?.blur()
       this.searchVisible = res;
     },
     clearSearch() {
@@ -125,6 +127,7 @@ ul {
     background-color: #fff0;
     border: 2px solid #929224ab;
     color: #929224;
+    margin-top: 2px;
 }
 
 :deep(.el-input__prefix),

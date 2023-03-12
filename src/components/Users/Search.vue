@@ -7,6 +7,7 @@
     >
     <el-input
         v-model="searchName"
+        id="search__users"
         placeholder="Знайти..."
         @focus="isSearchVisible(true)"
       >
@@ -76,6 +77,7 @@ export default Vue.extend({
   },
   methods: { 
     isSearchVisible(res: boolean) {
+      if (res == false) document.getElementById('search__users')?.blur()
       this.searchVivsible = res;
     },
     clearSearch() {
@@ -122,6 +124,7 @@ ul {
   border: 2px solid #245f1aab;
   color: #245f1a;
   font-size: 18px;
+  margin-top: 2px;
 }
 .search__found {
   background: linear-gradient(#fffbef, rgb(213 213 64));

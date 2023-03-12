@@ -41,7 +41,7 @@
       <el-col :span="8">
         <el-card shadow="hover">
           Заблокувати
-          <i class="el-icon-error"></i>
+          <i class="el-icon-warning"></i>
         </el-card>
       </el-col>
     </div>
@@ -89,7 +89,7 @@
       <el-col :span="8">
         <el-card shadow="hover">
           Видалити чат
-          <i class="el-icon-remove"></i>
+          <i class="el-icon-error"></i>
         </el-card>
       </el-col>
     </div>

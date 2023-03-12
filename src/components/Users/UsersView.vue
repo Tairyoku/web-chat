@@ -95,10 +95,45 @@ export default Vue.extend({
 
 <style scoped>
 :deep(.el-tabs__header) {
-    border-bottom: 1px solid rgba(195, 0, 0, 0.3);
     margin: 0;
 }
 .users-bar {
   width: inherit;
+}
+:deep(.el-tabs__nav-scroll) {
+    overflow: hidden;
+    border: none;
+}
+:deep(.el-tabs--card>.el-tabs__header .el-tabs__nav) {
+  border: 2px solid #245f1ab0;
+  border-bottom: none;
+  min-width: 100%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+:deep(.el-tabs--card>.el-tabs__header .el-tabs__item) {
+  border: none;
+}
+:deep(.el-tabs__nav-wrap) {
+    border-bottom: 2px solid #245f1ab0;
+}
+:deep(.el-tabs__nav-prev) {
+    color: #245f1a;
+}
+.el-tabs--card>.el-tabs__header {
+border: none;
+}
+:deep(.el-tabs__item.is-active) {
+  color: #929224;
+  background-color: #fbff8580;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+:deep(.el-tabs__item) {
+    color: #245f1a;
+}
+:deep(.el-tabs__item:focus),
+:deep(.el-tabs__item:hover) {
+    color: #929224;
 }
 </style>
