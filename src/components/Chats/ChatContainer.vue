@@ -39,6 +39,7 @@ export default Vue.extend({
     chat: Object as () => IChat,
   },
   computed: {
+    ...mapGetters(["UPDATER"]),
     getClass(): string {
       return `name__${this.chat.id}`;
     },
@@ -64,6 +65,11 @@ export default Vue.extend({
       }
     },
   },
+  watch: {
+    UPDATER() {
+      this.getNumOfUsers();
+    }
+  },
   methods: {
     getNumOfUsers() {
       this.$store
@@ -72,6 +78,7 @@ export default Vue.extend({
     },
     getChat() {
       this.$emit("click");
+      this.$store.commit("incrimentUpdater");
     },
     runningLine() {
       const text = document.getElementById(`name__${this.chat.id}`);
@@ -122,7 +129,7 @@ export default Vue.extend({
   font-size: 18px;
   height: 60px;
   width: 60px;
-  margin: 0 16px;
+  margin: 0 1.5vw;
   border-radius: 30px;
   color: white;
   background-color: rgb(232, 97, 47);
@@ -147,7 +154,7 @@ export default Vue.extend({
   width: -webkit-fill-available;
   font-size: 16px;
   text-align: start;
-  padding-left: 24px;
+  /* padding-left: 24px; */
   overflow: hidden;
   flex-direction: column;
   justify-content: space-around;

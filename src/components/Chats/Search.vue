@@ -115,6 +115,7 @@ ul {
   width: inherit;
   overflow-y: auto;
   height: calc(100vh - 32px);
+  margin-top: -2px;
 
 }
 .search__search-line {
@@ -127,7 +128,6 @@ ul {
     background-color: #fff0;
     border: 2px solid #929224ab;
     color: #929224;
-    margin-top: 2px;
 }
 
 :deep(.el-input__prefix),

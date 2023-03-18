@@ -17,17 +17,17 @@ created() {
   this.$store.dispatch('getStarted')
 
 },  
-mounted() {
-  window.addEventListener('resize', this.handleResize);
-},
-methods: {
-  handleResize() {
-  this.$store.commit('incrimentUpdater')
-  }
-},
-beforeDestroy() {
-  window.removeEventListener('resize', this.handleResize);
-}
+// mounted() {
+//   window.addEventListener('resize', this.handleResize);
+// },
+// methods: {
+//   handleResize() {
+//   this.$store.commit('incrimentUpdater')
+//   }
+// },
+// beforeDestroy() {
+//   window.removeEventListener('resize', this.handleResize);
+// }
 });
 </script>
  

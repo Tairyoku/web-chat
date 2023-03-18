@@ -2,18 +2,18 @@
   <div class="users-bar">
     <Search @getChat="getChat" />
   <UserContainer :user="USER" @click="getChat(USER_ID)" />
-    <el-tabs type="card">
-      <el-tab-pane label="Усі">
+    <el-tabs type="card" @tab-click="updateList()">
+      <el-tab-pane label="Усі" >
         <ChatsList />
       </el-tab-pane>
       <el-tab-pane label="Друзі">
-        <UsersList @getChat="getChat" :list="friends" />
+        <UsersList @getChat="getChat" :list="friendsOutcludeBL" />
       </el-tab-pane>
       <el-tab-pane label="Заблоковані">
-        <UsersList @getChat="getChat" :list="blackList" />
+        <UsersList @getChat="getChat" :list="BLACK_LIST" />
       </el-tab-pane>
       <el-tab-pane label="Запити">
-        <UsersList @getChat="getChat" :list="FRIENDSHIP_REQUIRE" />
+        <UsersList @getChat="getChat" :list="requiresOutcludeBL" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -47,12 +47,14 @@ export default Vue.extend({
       this.$store.dispatch("getUserPrivateChats", this.USER_ID);
       });
     },
+    updateList() {
+      this.$store.dispatch("usersList", this.USER_ID);
+    }
   },
   computed: {
     ...mapGetters([
       "FRIEND_LIST",
       "BLACK_LIST",
-      "ON_BLACK_LISTS",
       "SENT_INVITES_TO_FRIENDS",
       "FRIENDSHIP_REQUIRE",
       "USER",
@@ -60,28 +62,33 @@ export default Vue.extend({
       'CHAT_ID'
     ]),
     friends(): IUser[] {
-      // return [
-      //   {
-      //     id: 1,
-      //     username: "first",
-      //     },
-      //   {
-      //     id: 2,
-      //     username: "firstfirstfirstfirstfirstfirst",
-      //     },
-      //   {
-      //     id: 3,
-      //     username: "firstfirstfirstfirstfirstfirstfirstfirstfirstfirst",
-      //     },
-      //   {
-      //     id: 4,
-      //     username: "last",
-      //     },
-      // ] as IUser[]
       return this.FRIEND_LIST.concat(this.SENT_INVITES_TO_FRIENDS);
     },
-    blackList() {
-      return this.BLACK_LIST.concat(this.ON_BLACK_LISTS);
+    friendsOutcludeBL(): IUser[] {
+      let result = [] as IUser[]
+      this.friends.forEach((friend: IUser) => {
+        let check = 0
+        this.BLACK_LIST.forEach((user:IUser) => {
+        // Якщо користувачі співпадають, то збільшуємо check на 1
+          if (friend.id == user.id) check++;
+        })
+        // check = 0 означає, що збігів не було
+        if (check == 0) result.push(friend);
+      })
+        return result;
+    },
+    requiresOutcludeBL(): IUser[] {
+      let result = [] as IUser[]
+      this.FRIENDSHIP_REQUIRE.forEach((friend: IUser) => {
+        let check = 0
+        this.BLACK_LIST.forEach((user:IUser) => {
+        // Якщо користувачі співпадають, то збільшуємо check на 1
+          if (friend.id == user.id) check++;
+        })
+        // check = 0 означає, що збігів не було
+        if (check == 0) result.push(friend);
+      })
+        return result;
     },
   },
   components: {
@@ -90,6 +97,7 @@ export default Vue.extend({
     UserContainer,
     ChatsList,
   },
+
 });
 </script>
 
@@ -108,6 +116,8 @@ export default Vue.extend({
   border: 2px solid #245f1ab0;
   border-bottom: none;
   min-width: 100%;
+  display: flex;
+  justify-content: space-around;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
@@ -131,6 +141,7 @@ border: none;
 }
 :deep(.el-tabs__item) {
     color: #245f1a;
+    padding: 0 12px;
 }
 :deep(.el-tabs__item:focus),
 :deep(.el-tabs__item:hover) {

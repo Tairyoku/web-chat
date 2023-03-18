@@ -166,8 +166,9 @@ export default Vue.extend({
           text: "Чат видалено",
           type: "success",
         });
-        this.WEB_SOCKET.send("block");
         this.$router.push("/");
+        this.WEB_SOCKET.send("block");
+        this.$store.commit("closeSocket");
       });
     },
     leaveChat() {
@@ -185,6 +186,7 @@ export default Vue.extend({
             type: "success",
           });
           this.WEB_SOCKET.send("block");
+          // this.$store.commit("closeSocket");
           // this.$router.push("/");
         });
     },

@@ -110,7 +110,6 @@ export default Vue.extend({
 .user__data {
   display: flex;
   background-color: #d5d54070;
-  box-shadow: 0px 0px 10px rgb(173 255 0 / 51%);
   padding: 8px 16px;
   border-radius: 8px;
 }

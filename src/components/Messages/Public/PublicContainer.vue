@@ -124,7 +124,6 @@ export default Vue.extend({
   align-items: flex-start;
 }
 .container__name {
-  margin-left: 8px;
   width: 100%;
   font-size: larger;
   text-align: center;

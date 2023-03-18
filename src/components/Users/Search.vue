@@ -124,13 +124,13 @@ ul {
   border: 2px solid #245f1aab;
   color: #245f1a;
   font-size: 18px;
-  margin-top: 2px;
 }
 .search__found {
   background: linear-gradient(#fffbef, rgb(213 213 64));
   position: absolute;
   z-index: 3;
   width: inherit;
+  margin-top: -2px;
   height: -webkit-fill-available;
 }
 .search__not-found {

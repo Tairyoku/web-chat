@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="create">
     <div class="warning" v-if="getIsOnBlackList">
       <i style="margin-right: 16px" class="el-icon-warning"></i>
       <em>Ви не можете відправляти повідомлення цьому користувачу</em>
@@ -49,10 +49,20 @@ export default Vue.extend({
     },
   },
   methods: {
+    openWebsocket(chatId: number) {
+      if (this.WEB_SOCKET.readyState != undefined) {
+        this.$store.commit("closeSocket");
+      }
+      this.$store.dispatch("openWebsocket", chatId)
+
+    },
     getData() {
       this.$store
         .dispatch("getById", this.CHAT_ID)
-        .then((res) => (this.user = res.user));
+        .then((res) => {
+          if (res == undefined) return
+          this.user = res.user
+        });
       this.$store
         .dispatch("getChatUsers", this.CHAT_ID)
         .then((res) => (this.chatUsers = res.list));
@@ -87,19 +97,20 @@ export default Vue.extend({
           );
         });
     },
-    addUserToChat() {
+    addUserToChat() { 
       this.$store
         .dispatch("addUserToChat", {
           userId: this.USER_ID,
           chatId: this.CHAT_ID,
         })
         .then(() => {
+          // this.openWebsocket(this.CHAT_ID)
           this.$notify({
             title: "Ви приєдналися до чату",
             type: "success",
           });
           this.getData();
-          this.WEB_SOCKET.send("update");
+          this.WEB_SOCKET.send("update")
         });
     },
   },
@@ -112,10 +123,11 @@ export default Vue.extend({
       "ID_LIST_OF_ON_BLACK_LISTS",
     ]),
     getIsOnBlackList(): boolean {
-      return this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.user.id);
+      return this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.user?.id);
     },
     getIsOnChat(): boolean {
       let list: number[] = [];
+      if (!this.chatUsers) return true
       this.chatUsers.forEach((item) => list.push(item.id));
       return list.includes(this.USER_ID);
     },
@@ -140,9 +152,13 @@ textarea::placeholder {
   width: -webkit-fill-available;
   padding: 12px;
   position: absolute;
-  bottom: 0;
+  bottom: -40px;
   border: 2px solid #a9ae2d;
   border-radius: 12px;
+}
+.create {
+  position: relative;
+  height: 100px;
 }
 .create__text {
   height: 100%;
@@ -181,12 +197,14 @@ textarea::placeholder {
   width: 90%;
   color: firebrick;
   margin: 0px auto;
-  transform: translate(0, -24px);
+position: absolute;
+margin-left: 5%;
   border: 2px solid firebrick;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   border-bottom: none;
   padding: 4px 0;
+  bottom: 96px;
   background-color: #ffc8c8;
 }
 .addToChat {

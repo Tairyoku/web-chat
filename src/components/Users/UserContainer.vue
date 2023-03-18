@@ -52,6 +52,7 @@ export default Vue.extend({
   methods: {
     getChat() {
       this.$emit("click");
+      this.$store.commit("incrimentUpdater");
     },
     runningLine() {
       const text = document.getElementById(`user__${this.user.id}`);
@@ -77,7 +78,7 @@ export default Vue.extend({
   font-size: 18px;
   height: 60px;
   width: 60px;
-  margin: 0 16px;
+  margin: 0 1.5vw;
   border-radius: 30px;
   color: white;
   background-color: rgb(232, 97, 47);
@@ -123,7 +124,7 @@ export default Vue.extend({
   display: flex;
   font-size: 16px;
   text-align: start;
-  padding-left: 24px;
+  /* padding-left: 2vw; */
   overflow: hidden;
   flex-direction: column;
   justify-content: space-around;

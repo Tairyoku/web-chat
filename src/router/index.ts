@@ -15,7 +15,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/chat/:id",
-    name: "home",
+    name: "chat",
     component: MessagesView,
   },
   {

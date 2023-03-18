@@ -151,17 +151,17 @@ export default Vue.extend({
       "WEB_SOCKET",
     ]),
     isFriend(): boolean {
-      return this.ID_LIST_OF_FRIEND_LIST.includes(this.user.id);
+      return this.ID_LIST_OF_FRIEND_LIST.includes(this.user?.id); 
     },
     notBlocked(): boolean {
-      return !this.ID_LIST_OF_BLACK_LIST.includes(this.user.id) 
-      && !this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.user.id);
+      return !this.ID_LIST_OF_BLACK_LIST.includes(this.user?.id) 
+      && !this.ID_LIST_OF_ON_BLACK_LISTS.includes(this.user?.id);
     },
   },
   watch: {
     CHAT_ID() {
       this.$store.dispatch("getById", this.CHAT_ID)
-      .then((res) => this.user = res.user)
+      .then((res) => this.user = res.user);
     },
   },
   methods: {
@@ -169,7 +169,6 @@ export default Vue.extend({
       this.blockedVisible = false;
       this.$store.dispatch("addToBlackList", this.user.id)
       .then(() => {
-        this.$store.dispatch("usersList", this.USER_ID);
         this.$notify({
           title: "Заблоковано",
           text: "Користувач заблокован",
@@ -203,15 +202,15 @@ export default Vue.extend({
           text: "Чат видалено",
           type: "success",
         });
-        this.$router.push("/chat/");
-        this.WEB_SOCKET.send("update info");
+        this.$router.push("/");
+        this.WEB_SOCKET.send("block");
+        this.$store.commit("closeSocket");
       });
     },
     deleteFriend() {
       this.deleteFriendVisible = false;
       this.$store.dispatch("deleteFriend", this.user.id)
       .then(() => {
-        this.$store.dispatch("usersList", this.USER_ID);
         this.$notify({
           title: "Ви позбулися друга",
           type: "success",
@@ -222,8 +221,10 @@ export default Vue.extend({
   },
   mounted() {
     this.$store.dispatch("getById", this.CHAT_ID)
-    .then((res) => this.user = res.user);
-  },
+    .then((res) => {
+          if (res == undefined) return
+          this.user = res.user
+        });  },
 });
 </script>
 

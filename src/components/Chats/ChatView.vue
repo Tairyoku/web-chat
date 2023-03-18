@@ -22,6 +22,7 @@
               style="margin-bottom: 4px"
               placeholder="Введіть назву"
               @input="nameValidate"
+              autofocus="true"
             />
         <div class="validate">{{ validateName }}</div>
             <div style="display: flex; justify-content: space-between">
@@ -99,9 +100,17 @@ export default Vue.extend({
     },
     createChat() {
       if (this.validateName != "") return;
+      if (this.chatName == "") {
+        this.nameValidate()
+        return
+      }
       this.$store
         .dispatch("createPublicChat", this.chatName)
-        .then(() => this.$store.dispatch("getUserPublicChats", this.USER_ID));
+        .then((res) => {
+          this.$store.dispatch("getUserPublicChats", this.USER_ID)
+          this.$router.push(`/chat/${res}`)
+          .then(() => this.$store.commit("setChatId", res));
+        });
       this.cancelCreate();
     },
     cancelCreate() {
@@ -129,7 +138,7 @@ ul {
   margin-block-end: 0;
 }
 .chat-view {
-  height: calc(100vh - 32px - 2px);
+  height: calc(100vh - 32px - 4px);
   width: inherit;
 }
 .chat__list {

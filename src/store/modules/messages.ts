@@ -1,8 +1,8 @@
 import axiosInstanse from "@/api";
 import { IMessage } from "../models";
 import { Module } from "vuex";
-import { RootState } from "../index"
 import { GET_LIMIT_MESSAGES, CREATE_MESSAGE } from "@/api/routes";
+import RootState from "../types";
 
 export interface MessagesState {
     // Список повідомлень
@@ -11,9 +11,9 @@ export interface MessagesState {
 
 // states 1; getters 1; mutations 2; actions 3;
 const MessagesModule: Module<MessagesState, RootState> = ({
-    state: () => ({
+    state: {
         messages: [],
-    }),
+    },
     getters: {
         MESSAGE_LIST: (state) => {
             return state.messages;

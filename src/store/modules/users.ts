@@ -1,7 +1,6 @@
 import axiosInstanse from "@/api";
 import { IUser } from "../models";
 import { Module } from "vuex";
-import { RootState } from "../index"
 import {
     USER_DATA,
     SEARCH_USERS,
@@ -14,6 +13,7 @@ import {
     DELETE_FROM_BL,
     DELETE_FRIEND
 } from "@/api/routes";
+import RootState from "../types";
 
 export interface UsersState {
     // Список знайдених користувачів
@@ -178,7 +178,7 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .post(ADD_FRIEND(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
         },
         /**
@@ -191,7 +191,7 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .delete(CANCEL_INVITE(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
         },
         /**
@@ -204,7 +204,7 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .put(ACCEPT(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
         },
         /**
@@ -217,7 +217,7 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .delete(REFUSE(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
         },
         /**
@@ -230,7 +230,7 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .post(ADD_TO_BL(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
         },
         /**
@@ -243,7 +243,7 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .delete(DELETE_FROM_BL(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
         },
         /**
@@ -256,10 +256,10 @@ const UsersModule: Module<UsersState, RootState> = ({
             await axiosInstanse
                 .delete(DELETE_FRIEND(userId))
                 .then(() => {
-                    this.dispatch("usersList", this.state.authState.userId);
+                    this.dispatch("usersList", this.getters.USER_ID);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    // console.log(err);
                 });
         },
     },

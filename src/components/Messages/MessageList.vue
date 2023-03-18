@@ -131,7 +131,7 @@ ul {
   width: calc(50vw - 1em - 4px);
     display: flex;
     align-self: end;
-    min-height: 60vh;
+    min-height: 56vh;
     flex-direction: column;
     justify-content: flex-end;
 }

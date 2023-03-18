@@ -16,7 +16,8 @@ import axiosInstanse from "@/api";
 import axiosInstanseFormData from "@/api/forFormData";
 import { IChat, IUser } from "../models";
 import { Module } from "vuex";
-import { RootState } from "../index"
+import RootState from "../types";
+import router from "@/router";
 
 export interface ChatState {
   // ID відкритого чату
@@ -33,12 +34,12 @@ export interface ChatState {
 }
 // states 4; getters 4; mutations 4; actions 13;
 const ChatModule: Module<ChatState, RootState> = ({
-  state: {
+  state: () => ({
     chatId: 0,
     privateChatList: [],
     publicChatList: [],
     searchChatsList: [],
-  },
+  }),
   getters: {
     CHAT_ID: (state: ChatState) => {
       return state.chatId;
@@ -126,10 +127,15 @@ const ChatModule: Module<ChatState, RootState> = ({
      * @param {string} name - назва чату
      */
     async createPublicChat({ }, name: string) {
+      let data = 0
       await axiosInstanse
         .post(CREATE_PUBLIC_CHAT, {
           "name": name,
         })
+        .then(res => data = res.data.id)
+        return new Promise((resolve, reject) => {
+          resolve(data);
+        });
     },
     /**
      * Створює ПРИВАТНИЙ чат (якщо його ще нема)
@@ -159,6 +165,9 @@ const ChatModule: Module<ChatState, RootState> = ({
       await axiosInstanse
         .get(GET_CHAT(chatId))
         .then((res) => {
+          if (res.status == 204) {
+            return
+          }
           chat = res.data.chat;
         })
       return new Promise((resolve, reject) => {
@@ -173,12 +182,15 @@ const ChatModule: Module<ChatState, RootState> = ({
      */
     async getById({ }, chatId: number): Promise<object> {
       let data: object;
-      await axiosInstanse
+      if (chatId == 0) data = {}
+      else {
+        await axiosInstanse
         .get(GET_BY_ID(chatId))
         .then((res) => {
-          this.commit('setChatId', res.data.chat.id)
           data = res.data;
         })
+        .catch(err => data = err)
+      }
       return new Promise((resolve, reject) => {
         resolve(data);
       });
@@ -217,8 +229,8 @@ const ChatModule: Module<ChatState, RootState> = ({
         .post(ADD_TO_CHAT(chatId), {
           "user_id": userId,
         }).then(() => {
-          this.dispatch("getUserPublicChats", this.state.authState.userId);
-          this.dispatch("usersList", this.state.authState.userId);
+          this.dispatch("getUserPublicChats", this.getters.USER_ID);
+          this.dispatch("usersList", this.getters.USER_ID);
         })
     },
     /**
@@ -231,6 +243,9 @@ const ChatModule: Module<ChatState, RootState> = ({
       await axiosInstanse
         .put(DELETE_FROM_CHAT(chatId), {
           "user_id": userId,
+        }).then((res) => {
+          if (res.status == 202) router.push("/")
+          this.commit("incrimentUpdater")
         })
     },
     /**
@@ -242,8 +257,8 @@ const ChatModule: Module<ChatState, RootState> = ({
       await axiosInstanse
         .delete(DELETE_CHAT(chatId))
         .then((res) => {
-          this.dispatch("getUserPublicChats", this.state.authState.userId);
-          this.dispatch("getUserPrivateChats", this.state.authState.userId);
+          this.dispatch("getUserPublicChats", this.getters.USER_ID);
+          this.dispatch("getUserPrivateChats", this.getters.USER_ID);
         })
     },
     /**

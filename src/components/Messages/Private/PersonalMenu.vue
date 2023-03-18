@@ -34,13 +34,23 @@
       :visible.sync="changeUsernameVisible"
       >
       <el-form v-if="changeUsernameVisible" status-icon>
+        <el-form-item style="display: none;">
+          <el-input></el-input>
+        <div class="validate">{{ validateOldPassword }}</div>
+        </el-form-item>
         <el-form-item>
           <el-input
             type="text"
             v-model="newUsername"
-            autocomplete="off"
             @input="usernameValidate"
-        ></el-input>
+        />
+        <!-- <input
+          class="el-input__inner"
+            type="text"
+            v-model="newUsername"
+            @input="usernameValidate"
+            @keyup.enter="changeUsernameHandler"
+        /> -->
         <div class="validate">{{ validateUsername }}</div>
         </el-form-item>
         <el-form-item>
@@ -249,16 +259,18 @@ export default Vue.extend({
       this.validateNewPassword = ""
     },
     changeUsernameHandler() {
+        this.usernameValidate()
       if (this.validateUsername != "") return;
       this.$store
       .dispatch("changeUsername", {
         username: this.newUsername,
       })
       .then(err => {
-        if (err.response?.data.message == 'username is used') {
+        if (err.status == 202) {
           this.validateUsername = "Ім'я користувача вже зайняте"
           return
-        } else if (err.response?.status == 500) {
+        }
+         if (err.response?.status == 500) {
           this.validateUsername = "Повторіть пізніше"
           return
         } 
@@ -273,6 +285,7 @@ export default Vue.extend({
         });
     },
     changePasswordHandler() {
+      this.passwordValidate()
       if (this.validateOldPassword != "") return;
       this.$store
       .dispatch("changePassword", {
@@ -280,10 +293,11 @@ export default Vue.extend({
         newPassword: this.passwordForm.newPass,
       })
       .then(err => {
-        if (err.response?.data.message == 'incorrect password') {
+        if (err.status == 202) {
             this.validateOldPassword = "Невірний пароль"
             return
-          } else if (err.response?.status == 500) {
+          }
+           if (err.response?.status == 500) {
             this.validateOldPassword = "Повторіть пізніше"
             return
           }
@@ -296,6 +310,7 @@ export default Vue.extend({
     },
     logoutHandler() {
       this.logoutVisible = false
+      this.$emit('closeMenu')
       this.$store.dispatch("logout")
       .then(() => this.$router.push({ name: "sign-up" }));
     },

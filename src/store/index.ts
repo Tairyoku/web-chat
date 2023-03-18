@@ -2,33 +2,27 @@ import { WEB_SOCKET } from "@/api/routes";
 import Vue from "vue";
 import Vuex from "vuex";
 import { IChat, IMessage, IUser } from "./models";
-import ChatModule, {ChatState} from "./modules/chats"
-import AuthModule, {AuthState} from "./modules/auth"
-import UsersModule, {UsersState} from "./modules/users"
-import MessagesModule, {MessagesState} from "./modules/messages"
+import ChatModule, { ChatState } from "./modules/chats"
+import AuthModule, { AuthState } from "./modules/auth"
+import UsersModule, { UsersState } from "./modules/users"
+import MessagesModule, { MessagesState } from "./modules/messages"
+import axiosInstanse from "@/api";
+import RootState from "./types";
+import axiosInstanseFormData from "@/api/forFormData";
 Vue.use(Vuex);
 
 
-export interface RootState {
-      chatState: ChatState,
-      usersState: UsersState,
-      authState: AuthState,
-      messagesState: MessagesState,  
-  // Web socket
-      socket: WebSocket,
-          //Спеціальне значення для оновлення локальних даних
-    updater: number,
-}
+
 
 export default new Vuex.Store<RootState>({
-  state: {
+  state: () => ({
     chatState: {} as ChatState,
     usersState: {} as UsersState,
     messagesState: {} as MessagesState,
     authState: {} as AuthState,
     socket: {} as WebSocket,
     updater: 0,
-  },
+  }),
   getters: {
     WEB_SOCKET: (state) => {
       return state.socket;
@@ -44,15 +38,15 @@ export default new Vuex.Store<RootState>({
     closeSocket(state) {
       state.socket.close(1000);
     },
-      incrimentUpdater(state) {
-        state.updater++
-      },
+    incrimentUpdater(state) {
+      state.updater++
+    },
   },
   actions: {
     /**
      * Знищує усі дані хешу(усі стейти) 
      */
-    clearAllStateData({}) {
+    clearAllStateData({ }) {
       this.commit("closeSocket");
       window.localStorage.removeItem("token");
       this.commit("setSearchUsersList", [] as IUser[]);
@@ -68,7 +62,9 @@ export default new Vuex.Store<RootState>({
       this.commit("setChatMessages", [] as IMessage[]);
       this.commit("setPublicChatList", [] as IChat[]);
       this.commit("setPrivateChatList", [] as IChat[]);
-      this.commit("incrimentUpdater");
+      // this.commit("incrimentUpdater");
+      axiosInstanse.defaults.headers.common.Authorization = ""
+      axiosInstanseFormData.defaults.headers.common.Authorization = ""
     },
     /**
      * Підключає користувача до кімнати синхроного виконання функцій  
@@ -80,9 +76,10 @@ export default new Vuex.Store<RootState>({
       this.state.socket.onmessage = (msg: any) => {
         if (msg.data == "send message") {
           this.dispatch("getNewMessage", chatId)
-          .then(() => this.commit("incrimentUpdater"))
+            .then(() => this.commit("incrimentUpdater"))
         } else {
-        this.commit("incrimentUpdater");
+          this.commit("incrimentUpdater");
+          this.dispatch("usersList", this.getters.USER_ID)
         }
 
       };
